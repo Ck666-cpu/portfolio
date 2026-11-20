@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+  body {
+    @apply bg-[#e4dccb] text-quill antialiased dark:bg-ink dark:text-slate-200;
+    overflow-x: clip;
+    /* lamp light falling on the desk */
+    background-image: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(227, 194, 122, 0.18), transparent 70%);
+    background-attachment: fixed;
+  }
+  ::selection { @apply bg-gold-soft/50; }
+  :focus-visible { @apply outline-none ring-2 ring-accent-deep ring-offset-2 ring-offset-paper; }
+}
+
+@layer components {
+  /* A sheet of paper with a stack of pages under it */
+  .page {
+    @apply relative rounded-[6px] bg-paper text-quill shadow-page;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.6), transparent 40%),
+      radial-gradient(circle at 80% 90%, rgba(183, 134, 44, 0.08), transparent 45%),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.07), transparent 4%, transparent 96%, rgba(0, 0, 0, 0.05));
+  }
+  .page-pad { @apply px-5 py-12 sm:px-10 md:px-16 md:py-16; }
+  .chapter-kicker { @apply font-display text-sm font-medium italic tracking-wide text-gold; }
+  .chapter-title { @apply mt-1 font-display text-[34px] font-bold leading-[1.05] text-quill sm:text-[44px]; text-wrap: balance; }
+  .book-text { @apply font-book text-[17px] leading-[1.75] text-quill-soft; }
+  .dropcap::first-letter {
+    @apply float-left mr-2 mt-1 font-display text-[3.6em] font-bold leading-[0.8] text-accent-deep;
+  }
+  .folio { @apply mt-12 text-center font-display text-sm italic text-quill-soft/70; }
+  .btn { @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg px-5 text-[15px] font-semibold transition duration-200 ease-out; }
+  .btn-primary { @apply btn bg-quill text-paper hover:bg-accent-deep hover:shadow-glow; }
+  .btn-ghost { @apply btn border border-quill/25 text-quill hover:border-accent-deep hover:text-accent-deep; }
+  .chip { @apply inline-flex items-center rounded-full border border-accent-deep/25 bg-accent-deep/[0.07] px-2.5 py-1 text-xs font-semibold text-accent-deep; }
+  .paper-card { @apply rounded-xl border border-quill/10 bg-white/50; }
+  .preserve-3d { transform-style: preserve-3d; }
+  .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ── Story world ─────────────────────────────── */
+@keyframes leg-swing { from { transform: rotate(28deg); } to { transform: rotate(-28deg); } }
+@keyframes arm-swing { from { transform: rotate(-24deg); } to { transform: rotate(24deg); } }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3%); } }
+@keyframes flicker { 0%, 100% { transform: scaleY(1) skewX(0deg); } 50% { transform: scaleY(1.12) skewX(3deg); } }
+@keyframes smoke { from { transform: translate(0, 0) scale(0.6); opacity: 0.7; } to { transform: translate(14px, -60px) scale(1.6); opacity: 0; } }
+@keyframes blink-led { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+@keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+.hero-walk .leg-a { animation: leg-swing 0.42s ease-in-out infinite alternate; }
+.hero-walk .leg-b { animation: leg-swing 0.42s ease-in-out infinite alternate-reverse; }
+.hero-walk .arm-a { animation: arm-swing 0.42s ease-in-out infinite alternate; }
+.hero-walk .arm-b { animation: arm-swing 0.42s ease-in-out infinite alternate-reverse; }
+.hero-walk .body { animation: bob 0.42s ease-in-out infinite; }
+.flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flicker 0.6s ease-in-out infinite; }
+.smoke { animation: smoke 3s ease-out infinite; transform-box: fill-box; }
+.led { animation: blink-led 1.2s steps(2) infinite; }
+.nudge { animation: nudge 1.4s ease-in-out infinite; }
+.dialog {
+  @apply rounded-xl border-2 border-gold-soft/70 bg-[#0b1020]/90 text-slate-200 shadow-2xl backdrop-blur-md;
+  box-shadow: inset 0 0 0 4px rgba(11, 16, 32, 0.9), inset 0 0 0 5px rgba(227, 194, 122, 0.25), 0 25px 60px -20px rgba(0, 0, 0, 0.7);
+}
+.dchip { @apply inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.06] px-2.5 py-1.5 text-[13px] font-medium text-slate-200; }
+.dbtn { @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg px-4 text-[15px] font-semibold transition; }
+.dbtn-gold { @apply dbtn bg-gold-soft text-ink hover:bg-[#f0d79f]; }
+.dbtn-line { @apply dbtn border border-white/20 text-slate-100 hover:border-gold-soft hover:text-gold-soft; }
+@keyframes wave { 0%, 100% { transform: rotate(-150deg); } 50% { transform: rotate(-115deg); } }
+.wave-arm { animation: wave 0.7s ease-in-out infinite; }
+@keyframes knock-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(227, 194, 122, 0.6); } 50% { box-shadow: 0 0 0 8px rgba(227, 194, 122, 0); } }
+.knock { animation: knock-pulse 1.6s ease-out infinite; }
+@keyframes heart-float { 0% { transform: translate(-50%, 0) scale(0.6); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(-50%, -38px) scale(1.1); opacity: 0; } }
+.heart-float { animation: heart-float 2.2s ease-out infinite; }
