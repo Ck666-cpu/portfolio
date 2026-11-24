@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useMotionTemplate, useMotionValueEvent, useScroll, useTransform } from 'framer-motion';
-import { ChevronRight, Download, Mouse, Sparkles, X } from 'lucide-react';
+import { BookOpen, ChevronRight, Download, Minimize2, Mouse, Sparkles, X } from 'lucide-react';
 import Character from './Character.jsx';
 import { SCENES } from './Scenes.jsx';
 import { STOPS } from './Panels.jsx';
@@ -8,7 +8,7 @@ import { friends, profile } from '../../data/portfolio.js';
 import Friend from './Friend.jsx';
 import SkillTree from './SkillTree.jsx';
 import { LightingDefs } from './Stage.jsx';
-import { Aurora, ChapterTitle, Clouds, GodRays, Intro, LensFlare, Particles, PostFX, Skyline, Stars } from './Atmosphere.jsx';
+import { Aurora, Clouds, GodRays, Intro, LensFlare, Particles, PostFX, Skyline, Stars } from './Atmosphere.jsx';
 
 const N = STOPS.length;
 const P = STOPS.map((_, i) => i / (N - 1)); // scroll progress at each stop
@@ -26,7 +26,13 @@ const CLOUD_D = ['#141a36', '#252a55', '#6b4f7d', '#c47c83', '#d6a8a0', '#c9d6ea
 const HAZE = ['rgba(22,34,74,0.9)', 'rgba(52,66,122,0.85)', 'rgba(183,120,146,0.6)', 'rgba(241,157,120,0.55)', 'rgba(251,196,140,0.5)', 'rgba(253,226,182,0.45)', 'rgba(227,242,255,0.5)'];
 
 const CX = 'clamp(110px, 24vw, 360px)'; // where the character stands
-const SH = 'min(44svh, 52vw)'; // scene height
+const SH_VH = 0.52; // scene height: min(52svh, 60vw)
+const SH_VW = 0.6;
+const SH = `min(${SH_VH * 100}svh, ${SH_VW * 100}vw)`;
+const JK = 0.35; // Jeff's height as a share of the scene height
+const JH = `(${SH} * ${JK})`; // Jeff's height (CSS)
+const FW = `(${JH} / 2)`; // friend width unit (CSS)
+const ZOOM = 1.07; // camera push-in when Jeff arrives somewhere
 const G = '22svh'; // ground height
 const FRIEND_H = { tall: 1.1, same: 1, short: 0.92 }; // relative to Jeff
 // Buildings you can click: which stop, which friends group, and the building's
@@ -35,7 +41,7 @@ const DOORS = [
   { stop: 'about', group: 'campus', label: 'TAR UMT', box: { left: -0.53, width: 1.21, height: 0.74 } },
   { stop: 'experience', group: 'city', label: 'Ant International', box: { left: -0.24, width: 0.63, height: 1.13 } },
 ];
-// Group-photo spots around Jeff, in friend-widths (7svh): b = back row (behind Jeff, peeking), f = front row
+// Group-photo spots around Jeff, in friend-widths (FW): b = back row (behind Jeff, peeking), f = front row
 const SPOTS_WIDE = [[1.3, 'f'], [-1.3, 'b'], [2.35, 'b'], [3.4, 'f'], [4.45, 'b'], [5.5, 'f']];
 const SPOTS_NARROW = [[0.75, 'f'], [-0.7, 'b'], [1.4, 'b'], [2.05, 'f'], [2.7, 'b'], [3.35, 'f']];
 const TILT = [-4, 3, -2, 4, -3, 2];
@@ -159,9 +165,9 @@ export default function World({ openProject, notify }) {
       // Where Jeff's hands are, in the Park scene's 600×400 units, so the ball leaves from him
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const k = 400 / Math.min(0.44 * vh, 0.52 * vw); // scene units per pixel
+      const k = 400 / Math.min(SH_VH * vh, SH_VW * vw); // scene units per pixel
       const x0 = 285 + (last.current - PARK) * vw * k;
-      const y0 = 400 - (0.2246 - 0.154) * vh * k;
+      const y0 = 400 - (0.1056 * vh + 0.85 * JK * Math.min(SH_VH * vh, SH_VW * vw) - 0.154 * vh) * k; // hands above Jeff's head
       setShot((sh) => ({ n: (sh?.n || 0) + 1, result, x0, y0 }));
       setTimeout(() => {
         setScore((sc) => ({ made: sc.made + (result === 'made' ? 1 : 0), total: sc.total + 1 }));
@@ -206,6 +212,7 @@ export default function World({ openProject, notify }) {
   }, [active, friendsAt]);
 
   const stop = active >= 0 && friendsAt === null ? STOPS[active] : null;
+  const [collapsed, setCollapsed] = useState(false); // hide the panel to look at the scene
   const openGroup = friendsAt !== null ? friends[DOORS.find((d) => STOPS[friendsAt].id === d.stop).group] : null;
 
   return (
@@ -213,6 +220,8 @@ export default function World({ openProject, notify }) {
       <div className="sticky top-0 h-[100svh] overflow-hidden bg-[#070b1c]">
         <LightingDefs />
         <Intro />
+        {/* camera: everything in the world, pushed in a little when Jeff arrives somewhere */}
+        <motion.div className="absolute inset-0" style={{ transformOrigin: `${CX} 80%` }} animate={{ scale: active >= 0 ? ZOOM : 1 }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}>
         {/* sky */}
         <motion.div className="absolute inset-0" style={{ background: sky }} />
         <Aurora opacity={aurora} />
@@ -224,7 +233,6 @@ export default function World({ openProject, notify }) {
           <span className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_30%_30%,transparent_40%,rgba(30,41,80,.45))]" />
         </motion.div>
         <Clouds x={cloudFarX} light={cloudL} shade={cloudD} top="6svh" scale={0.8} count={7} opacity={0.75} />
-        <ChapterTitle active={active} />
 
         <motion.div aria-hidden className="absolute inset-x-0 h-[50svh]" style={{ opacity: dawnGlow, bottom: G, background: 'radial-gradient(ellipse 60% 70% at 55% 100%, rgba(253,186,116,0.75), transparent 70%)' }} />
         {/* far hills + KL skyline */}
@@ -266,7 +274,7 @@ export default function World({ openProject, notify }) {
         <motion.div className="pointer-events-none absolute inset-0 bg-[#0a1030]" style={{ opacity: night }} />
 
         {/* Jeff */}
-        <div className="absolute z-10" style={{ left: `calc(${CX} - 3.8svh)`, bottom: `calc(${G} * 0.48)`, height: '14svh' }}>
+        <div className="absolute z-10" style={{ left: `calc(${CX} - ${JH} * 0.27)`, bottom: `calc(${G} * 0.48)`, height: `calc${JH}` }}>
           <motion.div
             key={shot?.n || 0}
             className="h-full"
@@ -320,7 +328,7 @@ export default function World({ openProject, notify }) {
                           <motion.div
                             key={f.id}
                             className="absolute"
-                            style={{ left: `calc(${i * 100}vw + ${CX} + ${pos} * 7svh - 3.5svh * ${FRIEND_H[f.height]})`, bottom: `calc(${G} * 0.48 + ${back ? '2.4svh' : '0px'})` }}
+                            style={{ left: `calc(${i * 100}vw + ${CX} + ${pos} * ${FW} - ${FW} / 2 * ${FRIEND_H[f.height]})`, bottom: `calc(${G} * 0.48 + ${back ? `${JH} * 0.17` : '0px'})` }}
                             initial={{ opacity: 0, x: `${-pos * 100}%`, y: 0, scale: 0.3 }}
                             animate={{ opacity: 1, x: '0%', y: [0, -38, 0], scale: back ? 0.94 : 1 }}
                             exit={{ opacity: 0, scale: 0.4, y: 10, transition: { duration: 0.2 } }}
@@ -329,7 +337,7 @@ export default function World({ openProject, notify }) {
                             {/* gentle idle bounce while waving */}
                             <motion.div
                               className="relative"
-                              style={{ height: `calc(14svh * ${FRIEND_H[f.height]})` }}
+                              style={{ height: `calc(${JH} * ${FRIEND_H[f.height]})` }}
                               animate={{ y: [0, -5, 0] }}
                               transition={{ duration: 0.9 + (k % 3) * 0.15, repeat: Infinity, ease: 'easeInOut', delay: 0.14 * k + 0.7 }}
                             >
@@ -371,6 +379,7 @@ export default function World({ openProject, notify }) {
             </div>
           ))}
         </motion.div>
+        </motion.div>
         <LensFlare xn={sunXn} yn={sunYn} opacity={flare} />
         <PostFX />
 
@@ -396,18 +405,23 @@ export default function World({ openProject, notify }) {
 
         {/* dialogue box */}
         <AnimatePresence mode="wait">
-          {stop && (
+          {stop && !collapsed && (
             <motion.section
               key={stop.id}
               id={`panel-${stop.id}`}
               aria-label={stop.place}
-              initial={{ opacity: 0, y: 24, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 12, scale: 0.98 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="dialog absolute inset-x-3 top-[76px] z-30 max-h-[calc(100svh-76px-22svh-9svh)] overflow-y-auto overscroll-contain p-5 sm:p-6 md:inset-x-auto md:right-[4vw] md:top-[92px] md:w-[min(580px,46vw)] md:max-h-[calc(100svh-92px-24svh)]"
+              initial={{ opacity: 0, x: 60, filter: 'blur(6px)' }}
+              animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, x: 40, filter: 'blur(4px)', transition: { duration: 0.2 } }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="dialog absolute inset-x-3 top-[76px] z-30 max-h-[calc(100svh-76px-22svh-9svh)] overflow-y-auto overscroll-contain p-5 sm:p-6 md:inset-x-auto md:right-[3vw] md:top-[92px] md:w-[min(500px,40vw)] md:max-h-[calc(100svh-92px-24svh)]"
             >
-              <p className="mb-3 inline-flex items-center gap-2 rounded-md bg-gold-soft/15 px-2.5 py-1 font-display text-sm italic text-gold-soft">{stop.place}</p>
+              <div className="mb-3 flex items-start justify-between gap-3">
+                <p className="inline-flex items-center gap-2 rounded-md bg-gold-soft/15 px-2.5 py-1 font-display text-sm italic text-gold-soft">{stop.place}</p>
+                <button onClick={() => setCollapsed(true)} aria-label="Hide the panel to see the scene" title="Hide panel" className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/15 text-slate-300 transition hover:border-gold-soft hover:text-gold-soft">
+                  <Minimize2 size={15} />
+                </button>
+              </div>
               <stop.Panel go={go} openProject={openProject} notify={notify} score={score} shoot={shoot} openTree={() => setTreeOpen(true)} />
               {active < N - 1 && (
                 <button onClick={() => go(active + 1)} className="mt-5 flex items-center gap-1 text-sm font-semibold text-gold-soft hover:text-white">
@@ -415,6 +429,20 @@ export default function World({ openProject, notify }) {
                 </button>
               )}
             </motion.section>
+          )}
+          {stop && collapsed && (
+            <motion.button
+              key="show-panel"
+              onClick={() => setCollapsed(false)}
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 30 }}
+              className="dialog absolute right-3 top-[76px] z-30 flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-100 md:right-[3vw] md:top-[92px]"
+            >
+              <BookOpen size={16} className="text-gold-soft" />
+              <span className="font-display italic text-gold-soft">{stop.place}</span>
+              <span className="text-slate-400">· Show</span>
+            </motion.button>
           )}
         </AnimatePresence>
 

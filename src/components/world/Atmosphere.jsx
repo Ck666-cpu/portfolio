@@ -247,51 +247,6 @@ export const Particles = memo(function Particles({ p, s }) {
   return <canvas ref={ref} aria-hidden className="pointer-events-none absolute inset-0 z-[12] h-full w-full" />;
 });
 
-/* ── Giant chapter title in the sky ─────────────────────── */
-const CHAPTERS = [
-  ['00', 'Prologue'],
-  ['01', 'The Arena'],
-  ['02', 'The Workshop'],
-  ['03', 'The Quest Board'],
-  ['04', 'The City'],
-  ['05', 'The Park'],
-  ['06', 'Sunrise'],
-];
-export const ChapterTitle = memo(function ChapterTitle({ active }) {
-  return (
-    <div aria-hidden className="pointer-events-none absolute left-[3vw] top-[78px] z-[1] select-none md:top-[84px]">
-      <AnimatePresence mode="wait">
-        {active >= 0 && (
-          <motion.div key={active} initial="out" animate="in" exit="gone" className="relative">
-            <div className="flex overflow-hidden">
-              {CHAPTERS[active][0].split('').map((ch, i) => (
-                <motion.span
-                  key={i}
-                  className="chapter-num"
-                  variants={{
-                    out: { y: '110%', rotate: 8, opacity: 0 },
-                    in: { y: '0%', rotate: 0, opacity: 1, transition: { delay: 0.05 + i * 0.08, duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
-                    gone: { y: '-60%', opacity: 0, transition: { duration: 0.3 } },
-                  }}
-                >
-                  {ch}
-                </motion.span>
-              ))}
-            </div>
-            <motion.div
-              className="mt-1 flex items-center gap-3 pl-2"
-              variants={{ out: { opacity: 0, x: -30 }, in: { opacity: 1, x: 0, transition: { delay: 0.35, duration: 0.6 } }, gone: { opacity: 0, transition: { duration: 0.2 } } }}
-            >
-              <span className="h-px w-12 bg-gradient-to-r from-transparent to-gold-soft" />
-              <span className="chapter-word">{CHAPTERS[active][1]}</span>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-});
-
 /* ── Film grain + vignette ──────────────────────────────── */
 export const PostFX = memo(function PostFX() {
   return (

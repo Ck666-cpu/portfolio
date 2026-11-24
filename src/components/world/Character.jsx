@@ -4,7 +4,7 @@ export default function Character({ walking, facing = 1 }) {
   return (
     <svg
       viewBox="0 0 70 120"
-      className={`h-full w-auto overflow-visible ${walking ? 'hero-walk' : ''}`}
+      className={`h-full w-auto overflow-visible ${walking ? 'hero-walk' : 'hero-idle'}`}
       style={{ transform: `scaleX(${facing})`, filter: 'drop-shadow(0 0 6px rgba(94,234,212,.35)) drop-shadow(0 6px 10px rgba(0,0,0,.35))' }}
       role="img"
       aria-label="Jeff, the main character"
@@ -83,6 +83,7 @@ export default function Character({ walking, facing = 1 }) {
           <rect x="28" y="108" width="20" height="2" rx="1" fill="#475569" />
         </g>
         {/* neck + head */}
+        <g className="head">
         <rect x="31" y="33" width="8" height="9" rx="2" fill="#d9a27c" />
         <circle cx="37" cy="23.5" r="13" fill="url(#hj-skin)" />
         {/* ear */}
@@ -93,13 +94,16 @@ export default function Character({ walking, facing = 1 }) {
         <path d="M40 9.5 q6 1 9 6" stroke="#8796b5" strokeWidth=".8" fill="none" strokeLinecap="round" opacity=".6" />
         {/* face */}
         <path d="M41.5 20.5 q2.5 -1.4 5 0" stroke="#1f2937" strokeWidth="1.1" fill="none" strokeLinecap="round" />
-        <ellipse cx="44" cy="24.2" rx="1.6" ry="2" fill="#111827" />
-        <circle cx="44.6" cy="23.4" r=".6" fill="#fff" />
+        <g className="eye">
+          <ellipse cx="44" cy="24.2" rx="1.6" ry="2" fill="#111827" />
+          <circle cx="44.6" cy="23.4" r=".6" fill="#fff" />
+        </g>
         <ellipse cx="45" cy="29" rx="2.2" ry="1.2" fill="#fb7185" opacity=".35" />
         <path d="M42 30.5 q3 1.6 5.2 0" stroke="#9a5b3c" strokeWidth="1.2" fill="none" strokeLinecap="round" />
         {/* headphones around the neck, softly glowing */}
         <path d="M26.5 38 q10.5 8.5 21 0" stroke="#5eead4" strokeWidth="3" fill="none" strokeLinecap="round" filter="url(#glow-soft)" />
         <rect x="23.5" y="34.5" width="6.5" height="9" rx="3.2" fill="#0f766e" stroke="#5eead4" strokeWidth="1" />
+        </g>
         {/* front arm */}
         <g className="arm-a" style={{ transformOrigin: '35px 44px' }}>
           <rect x="31" y="42" width="8.5" height="28" rx="4.2" fill="url(#hj-sleeve)" />
