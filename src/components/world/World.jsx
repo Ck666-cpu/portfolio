@@ -7,6 +7,8 @@ import { STOPS } from './Panels.jsx';
 import { friends, profile } from '../../data/portfolio.js';
 import Friend from './Friend.jsx';
 import SkillTree from './SkillTree.jsx';
+import { LightingDefs } from './Stage.jsx';
+import { Aurora, ChapterTitle, Clouds, GodRays, Intro, LensFlare, Particles, PostFX, Skyline, Stars } from './Atmosphere.jsx';
 
 const N = STOPS.length;
 const P = STOPS.map((_, i) => i / (N - 1)); // scroll progress at each stop
@@ -17,6 +19,11 @@ const FAR1 = ['#141c36', '#232c55', '#4a4874', '#80769a', '#a4a3c0', '#a9bfd6', 
 const FAR2 = ['#0d1428', '#18203f', '#33335a', '#5d5679', '#7d84a6', '#86a2c0', '#88a8c6'];
 const GRASS = ['#17251f', '#22362a', '#3a5236', '#58783f', '#6c9a4c', '#77ad5b', '#7db462'];
 const PATH = ['#3a3846', '#5a5260', '#8a7a78', '#c2a888', '#dcc39a', '#e6d2a8', '#ead8ae'];
+const GRASS_D = ['#08100d', '#0e1a14', '#1b2a1c', '#2c4220', '#355a26', '#3d6a2c', '#447432'];
+const SKYLINE = ['#0f1630', '#1b2248', '#3a3a62', '#655f84', '#8a90b0', '#93acc8', '#96b2cc'];
+const CLOUD_L = ['#3a4878', '#5a5f96', '#f5a9b8', '#ffd0a8', '#fff1dc', '#ffffff', '#ffffff'];
+const CLOUD_D = ['#141a36', '#252a55', '#6b4f7d', '#c47c83', '#d6a8a0', '#c9d6ea', '#c4d8f0'];
+const HAZE = ['rgba(22,34,74,0.9)', 'rgba(52,66,122,0.85)', 'rgba(183,120,146,0.6)', 'rgba(241,157,120,0.55)', 'rgba(251,196,140,0.5)', 'rgba(253,226,182,0.45)', 'rgba(227,242,255,0.5)'];
 
 const CX = 'clamp(110px, 24vw, 360px)'; // where the character stands
 const SH = 'min(44svh, 52vw)'; // scene height
@@ -39,20 +46,22 @@ function Mountains({ fill, peaks }) {
   return (
     <svg viewBox="0 0 1000 300" preserveAspectRatio="none" className="h-full w-[100vw] shrink-0">
       <motion.path style={{ fill }} d={peaks} />
+      <path d={peaks} fill="url(#mtn-shade)" />
     </svg>
   );
 }
 const PEAKS1 = 'M0 300 V170 L90 110 L170 160 L260 70 L360 150 L450 100 L540 160 L640 60 L740 140 L830 95 L920 150 L1000 170 V300 Z';
-const PEAKS2 = 'M0 300 V210 Q80 170 160 205 T320 195 Q380 120 420 190 L440 120 L452 90 L464 120 L470 190 L482 120 L494 90 L506 120 L512 190 Q600 160 680 200 T840 190 T1000 210 V300 Z';
+const PEAKS2 = 'M0 300 V210 Q80 160 160 200 T320 190 Q400 140 480 185 T640 180 Q720 150 800 195 T1000 210 V300 Z';
 
 function Lamp({ glow }) {
   return (
     <div className="relative h-[26svh] w-8">
-      <motion.div style={{ opacity: glow }} className="absolute -left-10 -top-6 h-28 w-28 rounded-full bg-amber-200/40 blur-2xl" />
+      <motion.div style={{ opacity: glow }} className="absolute -left-10 -top-6 h-28 w-28 rounded-full bg-amber-200/50 blur-2xl" />
+      <motion.div style={{ opacity: glow }} className="lamp-cone absolute left-1/2 top-[3svh] h-[26svh] w-[22svh] -translate-x-1/2" />
       <svg viewBox="0 0 30 200" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMax meet">
         <rect x="13" y="20" width="4" height="180" fill="#1f2937" />
         <path d="M6 22 h18 l-4 -14 h-10 Z" fill="#111827" />
-        <motion.rect style={{ opacity: glow }} x="9" y="16" width="12" height="6" fill="#fde68a" />
+        <motion.rect style={{ opacity: glow }} x="9" y="16" width="12" height="6" fill="#fff3c4" filter="url(#glow)" />
       </svg>
     </div>
   );
@@ -75,7 +84,7 @@ export default function World({ openProject, notify }) {
   const far2 = useTransform(p, P, FAR2);
   const grass = useTransform(p, P, GRASS);
   const path = useTransform(p, P, PATH);
-  const night = useTransform(p, [0, 0.2, 0.45, 0.6], [0.42, 0.3, 0.08, 0]);
+  const night = useTransform(p, [0, 0.2, 0.45, 0.6], [0.3, 0.22, 0.06, 0]);
   const stars = useTransform(p, [0, 0.25, 0.42], [1, 0.6, 0]);
   const lampGlow = useTransform(p, [0, 0.35, 0.5], [1, 0.8, 0]);
   const sunX = useTransform(p, [0.45, 1], ['52vw', '47vw']);
@@ -85,7 +94,24 @@ export default function World({ openProject, notify }) {
   const moonOp = useTransform(p, [0, 0.3, 0.42], [1, 0.7, 0]);
   const moonY = useTransform(p, [0, 0.42], ['12svh', '40svh']);
   const dawnGlow = useTransform(p, [0.2, 0.5, 0.8, 1], [0, 0.7, 0.5, 0.2]);
-    const markerLeft = useTransform(p, (v) => `${v * 100}%`);
+  const markerLeft = useTransform(p, (v) => `${v * 100}%`);
+  const sunXn = useTransform(p, [0.45, 1], [52, 47]);
+  const sunYn = useTransform(p, [0.45, 0.7, 1], [66, 42, 16]);
+  const rays = useTransform(p, [0.45, 0.62, 1], [0, 0.85, 0.55]);
+  const flare = useTransform(p, [0.55, 0.75, 1], [0, 0.9, 0.6]);
+  const aurora = useTransform(p, [0, 0.22, 0.38], [0.9, 0.55, 0]);
+  const grassD = useTransform(p, P, GRASS_D);
+  const ground = useMotionTemplate`linear-gradient(to bottom, ${grass}, ${grassD})`;
+  const skylineFill = useTransform(p, P, SKYLINE);
+  const cityLights = useTransform(p, [0, 0.4, 0.6], [1, 0.8, 0]);
+  const cloudL = useTransform(p, P, CLOUD_L);
+  const cloudD = useTransform(p, P, CLOUD_D);
+  const haze = useTransform(p, P, HAZE);
+  const hazeBg = useMotionTemplate`linear-gradient(to top, ${haze}, transparent)`;
+  const skylineX = useTransform(s, (v) => `${-v * 26}vw`);
+  const cloudFarX = useTransform(s, (v) => `${-v * 6}vw`);
+  const cloudNearX = useTransform(s, (v) => `${-v * 22}vw`);
+  const progressW = useTransform(p, (v) => `${v * 100}%`);
 
   const [pos, setPos] = useState(0);
   const [walking, setWalking] = useState(false);
@@ -184,42 +210,57 @@ export default function World({ openProject, notify }) {
 
   return (
     <div ref={ref} style={{ height: `${N * 130}svh` }} className="relative">
-      <div className="sticky top-0 h-[100svh] overflow-hidden">
+      <div className="sticky top-0 h-[100svh] overflow-hidden bg-[#070b1c]">
+        <LightingDefs />
+        <Intro />
         {/* sky */}
         <motion.div className="absolute inset-0" style={{ background: sky }} />
-        <motion.div className="absolute inset-0" style={{ opacity: stars }}>
-          {Array.from({ length: 70 }).map((_, i) => (
-            <span key={i} className="absolute rounded-full bg-white" style={{ left: `${(i * 37) % 100}%`, top: `${(i * 53) % 60}%`, width: i % 5 ? 2 : 3, height: i % 5 ? 2 : 3, opacity: 0.4 + ((i * 7) % 6) / 10 }} />
-          ))}
-        </motion.div>
-        <motion.div className="absolute h-16 w-16 -translate-x-1/2 rounded-full sm:h-20 sm:w-20" style={{ left: sunX, top: sunY, opacity: sunOp, background: sunColor, boxShadow: '0 0 80px 20px rgba(253,230,138,0.45)' }} />
+        <Aurora opacity={aurora} />
+        <Stars opacity={stars} />
+        <GodRays x={sunX} y={sunY} opacity={rays} />
+        <motion.div className="absolute h-16 w-16 -translate-x-1/2 rounded-full sm:h-20 sm:w-20" style={{ left: sunX, top: sunY, opacity: sunOp, background: sunColor, boxShadow: '0 0 60px 20px rgba(255,236,170,0.7), 0 0 160px 60px rgba(253,186,116,0.45)' }} />
         <motion.div className="absolute left-[14vw] h-14 w-14 rounded-full bg-slate-100 shadow-[0_0_60px_10px_rgba(226,232,240,0.35)]" style={{ opacity: moonOp, top: moonY }}>
           <span className="absolute left-3 top-3 h-3 w-3 rounded-full bg-slate-300" /><span className="absolute bottom-3 right-4 h-2 w-2 rounded-full bg-slate-300" />
+          <span className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_30%_30%,transparent_40%,rgba(30,41,80,.45))]" />
         </motion.div>
+        <Clouds x={cloudFarX} light={cloudL} shade={cloudD} top="6svh" scale={0.8} count={7} opacity={0.75} />
+        <ChapterTitle active={active} />
 
         <motion.div aria-hidden className="absolute inset-x-0 h-[50svh]" style={{ opacity: dawnGlow, bottom: G, background: 'radial-gradient(ellipse 60% 70% at 55% 100%, rgba(253,186,116,0.75), transparent 70%)' }} />
         {/* far hills + KL skyline */}
-        <motion.div className="absolute inset-x-0 flex" style={{ x: far1X, bottom: `calc(${G} + 4svh)`, height: '34svh' }}>
+        <motion.div className="absolute inset-x-0 flex will-change-transform" style={{ x: far1X, bottom: `calc(${G} + 4svh)`, height: '34svh' }}>
           {[0, 1, 2].map((i) => <Mountains key={i} fill={far1} peaks={PEAKS1} />)}
         </motion.div>
-        <motion.div className="absolute inset-x-0 flex" style={{ x: far2X, bottom: G, height: '26svh' }}>
+        <motion.div aria-hidden className="pointer-events-none absolute inset-x-0 h-[16svh]" style={{ bottom: `calc(${G} + 4svh)`, background: hazeBg }} />
+        <Skyline x={skylineX} fill={skylineFill} windows={cityLights} bottom={`calc(${G} + 1svh)`} height="24svh" />
+        <motion.div aria-hidden className="pointer-events-none absolute inset-x-0 h-[12svh]" style={{ bottom: G, background: hazeBg }} />
+        <motion.div className="absolute inset-x-0 flex will-change-transform" style={{ x: far2X, bottom: G, height: '20svh' }}>
           {[0, 1, 2, 3, 4].map((i) => <Mountains key={i} fill={far2} peaks={PEAKS2} />)}
         </motion.div>
+        <Clouds x={cloudNearX} light={cloudL} shade={cloudD} top="calc(100svh - 22svh - 16svh)" scale={1.4} count={6} opacity={0.35} blur={3} />
 
         {/* ground */}
-        <motion.div className="absolute inset-x-0 bottom-0" style={{ height: G, backgroundColor: grass }}>
-          <motion.div className="absolute inset-x-0 top-[22%] h-[30%]" style={{ backgroundColor: path }} />
-          <motion.div className="absolute inset-y-0 left-0 w-[800vw]" style={{ x: worldX, backgroundImage: 'radial-gradient(rgba(0,0,0,0.12) 2px, transparent 2.5px)', backgroundSize: '46px 26px' }} />
+        <motion.div className="absolute inset-x-0 bottom-0 overflow-hidden" style={{ height: G, background: ground }}>
+          <div className="absolute inset-x-0 top-0 h-[3px] bg-white/10" />
+          <motion.div className="absolute inset-x-0 top-[22%] h-[30%]" style={{ backgroundColor: path }}>
+            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,.22),transparent_25%,transparent_70%,rgba(0,0,0,.35))]" />
+            <motion.div className="absolute inset-y-0 left-0 w-[900vw] opacity-40" style={{ x: worldX, backgroundImage: 'linear-gradient(90deg, rgba(0,0,0,.35) 1px, transparent 1px), linear-gradient(rgba(0,0,0,.25) 1px, transparent 1px)', backgroundSize: '64px 50%' }} />
+          </motion.div>
+          <motion.div className="absolute inset-y-0 left-0 w-[900vw]" style={{ x: worldX, backgroundImage: 'radial-gradient(rgba(0,0,0,0.18) 1.5px, transparent 2px), radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1.5px)', backgroundSize: '38px 22px, 23px 17px' }} />
+          {/* light pool around Jeff */}
+          <div className="absolute top-[10%] h-[60%] w-[34svh] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgba(255,230,170,.22),transparent)]" style={{ left: CX }} />
         </motion.div>
 
         {/* the places */}
-        <motion.div className="absolute inset-0" style={{ x: worldX }}>
+        <motion.div className="absolute inset-0 will-change-transform" style={{ x: worldX }}>
           {SCENES.map((Scene, i) => (
-            <div key={i} className="absolute" style={{ left: `calc(${i * 100}vw + ${CX} - 0.675 * ${SH})`, bottom: `calc(${G} * 0.7)`, height: SH }}>
+            <div key={i} className="absolute will-change-transform" style={{ left: `calc(${i * 100}vw + ${CX} - 0.675 * ${SH})`, bottom: `calc(${G} * 0.7)`, height: SH }}>
               <Scene shot={i === PARK ? shot : undefined} />
             </div>
           ))}
         </motion.div>
+
+        <Particles p={p} s={s} />
 
         {/* pre-dawn tint, lifts as the sun comes up */}
         <motion.div className="pointer-events-none absolute inset-0 bg-[#0a1030]" style={{ opacity: night }} />
@@ -320,29 +361,32 @@ export default function World({ openProject, notify }) {
           </motion.div>
         ))}
 
-        {/* foreground lamps + grass */}
-        <motion.div className="pointer-events-none absolute bottom-0 left-0 z-20 flex" style={{ x: fgX }}>
+        {/* foreground lamps + grass, slightly out of focus */}
+        <motion.div className="pointer-events-none absolute bottom-0 left-0 z-20 flex will-change-transform" style={{ x: fgX }}>
           {Array.from({ length: 12 }).map((_, i) => (
             <div key={i} className="relative flex w-[75vw] shrink-0 items-end justify-around">
-              <svg viewBox="0 0 60 30" className="h-[5svh] w-auto"><path d="M0 30 q8 -26 12 0 q4 -30 10 0 q6 -22 10 0 q5 -28 12 0 q4 -18 16 0 Z" fill="#1f3b2a" opacity=".85" /></svg>
+              <svg viewBox="0 0 120 50" className="h-[9svh] w-auto blur-[2px]"><path d="M0 50 q10 -40 18 0 q6 -48 14 0 q8 -36 14 0 q7 -46 16 0 q6 -30 20 0 q5 -38 14 0 q6 -28 24 0 Z" fill="#0c1a12" /></svg>
               {i % 2 === 0 && <Lamp glow={lampGlow} />}
-              <svg viewBox="0 0 60 30" className="h-[4svh] w-auto"><path d="M0 30 q6 -20 10 0 q5 -26 12 0 q6 -18 10 0 Z" fill="#1f3b2a" opacity=".8" /></svg>
+              <svg viewBox="0 0 60 30" className="h-[6svh] w-auto blur-[1.5px]"><path d="M0 30 q6 -20 10 0 q5 -26 12 0 q6 -18 10 0 q6 -24 12 0 q4 -16 16 0 Z" fill="#0c1a12" /></svg>
             </div>
           ))}
         </motion.div>
+        <LensFlare xn={sunXn} yn={sunYn} opacity={flare} />
+        <PostFX />
 
         {/* top bar with the route map */}
-        <header className="absolute inset-x-0 top-0 z-40 flex h-16 items-center gap-4 bg-gradient-to-b from-black/45 to-transparent px-4 sm:px-6">
+        <header className="absolute inset-x-0 top-0 z-40 flex h-16 items-center gap-4 bg-gradient-to-b from-black/60 via-black/25 to-transparent px-4 sm:px-6">
           <button onClick={() => go(0)} className="flex shrink-0 items-center gap-2 font-display text-lg font-bold text-white">
-            <span className="grid h-9 w-9 place-items-center rounded-md bg-[#13213b] text-sm text-gold-soft ring-1 ring-gold/60">JL</span>
+            <span className="logo-mark grid h-9 w-9 place-items-center rounded-lg text-sm text-ink">JL</span>
             <span className="hidden sm:inline">Jeff Lam</span>
           </button>
           <nav aria-label="Story map" className="relative mx-auto flex max-w-2xl flex-1 items-center justify-between">
-            <span aria-hidden className="absolute inset-x-2 top-1/2 h-px -translate-y-1/2 bg-white/30" />
+            <span aria-hidden className="absolute inset-x-2 top-1/2 h-[2px] -translate-y-1/2 rounded-full bg-white/20" />
+            <span aria-hidden className="absolute left-2 right-2 top-1/2 h-[2px] -translate-y-1/2 overflow-hidden rounded-full"><motion.span className="block h-full bg-gradient-to-r from-gold-soft via-accent-soft to-violet-300 shadow-[0_0_12px_rgba(94,234,212,.9)]" style={{ width: progressW }} /></span>
             <motion.span aria-hidden className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent shadow-glow ring-2 ring-white" style={{ left: markerLeft }} />
             {STOPS.map((st, i) => (
               <button key={st.id} onClick={() => go(i)} aria-label={`Go to ${st.label}`} aria-current={active === i ? 'step' : undefined} className="group relative z-10 grid h-11 w-8 place-items-center">
-                <span className={`h-2.5 w-2.5 rotate-45 transition ${i <= pos + 0.01 ? 'bg-gold-soft' : 'bg-white/60'} ${active === i ? 'scale-150' : ''}`} />
+                <span className={`h-2.5 w-2.5 rotate-45 transition ${i <= pos + 0.01 ? 'bg-gold-soft shadow-[0_0_10px_rgba(227,194,122,.9)]' : 'bg-white/60'} ${active === i ? 'scale-[1.7] bg-white' : ''}`} />
                 <span className={`absolute top-9 hidden whitespace-nowrap text-xs font-semibold lg:block ${active === i ? 'text-white' : 'text-white/70 group-hover:text-white'}`}>{st.label}</span>
               </button>
             ))}

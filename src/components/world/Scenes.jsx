@@ -1,15 +1,23 @@
+import { memo } from 'react';
 import { motion } from 'framer-motion';
+import Stage from './Stage.jsx';
 
 // The places along Jeff's route. Each is drawn in a 600×400 box standing on the ground (y = 400).
 
 function Tree({ x, s = 1, c = '#2f7d4f' }) {
   return (
     <g transform={`translate(${x} 400) scale(${s})`}>
-      <rect x="-6" y="-70" width="12" height="70" fill="#6b4632" />
-      <circle cx="0" cy="-95" r="42" fill={c} />
-      <circle cx="-26" cy="-75" r="26" fill={c} />
-      <circle cx="26" cy="-72" r="28" fill={c} />
-      <circle cx="-10" cy="-112" r="18" fill="#fff" opacity=".08" />
+      <path d="M-7 0 L-5 -72 Q0 -78 5 -72 L8 0 Z" fill="#5a3a28" />
+      <path d="M1 -40 Q14 -52 22 -66" stroke="#5a3a28" strokeWidth="5" fill="none" strokeLinecap="round" />
+      <g style={{ filter: 'brightness(.62)' }}>
+        <circle cx="-30" cy="-70" r="28" fill={c} /><circle cx="30" cy="-68" r="30" fill={c} /><circle cx="0" cy="-100" r="44" fill={c} />
+      </g>
+      <circle cx="-22" cy="-80" r="24" fill={c} />
+      <circle cx="24" cy="-80" r="25" fill={c} />
+      <circle cx="-4" cy="-108" r="34" fill={c} />
+      <circle cx="-14" cy="-118" r="18" fill="#fff" opacity=".13" />
+      <circle cx="-30" cy="-88" r="10" fill="#fff" opacity=".1" />
+      <circle cx="18" cy="-96" r="9" fill="#fff" opacity=".08" />
     </g>
   );
 }
@@ -17,8 +25,8 @@ function Tree({ x, s = 1, c = '#2f7d4f' }) {
 function Lantern({ x, y }) {
   return (
     <g transform={`translate(${x} ${y})`}>
-      <circle cx="0" cy="10" r="22" fill="#fde68a" opacity=".18" />
-      <rect x="-7" y="0" width="14" height="20" rx="3" fill="#fbbf24" stroke="#78350f" strokeWidth="2" />
+      <circle cx="0" cy="10" r="34" fill="url(#lamp-halo)" />
+      <rect x="-7" y="0" width="14" height="20" rx="3" fill="#fde68a" stroke="#78350f" strokeWidth="2" filter="url(#glow)" />
       <rect x="-4" y="-5" width="8" height="5" fill="#78350f" />
     </g>
   );
@@ -26,7 +34,7 @@ function Lantern({ x, y }) {
 
 export function Home() {
   return (
-    <svg viewBox="0 0 600 400" className="h-full w-auto overflow-visible" aria-hidden>
+    <Stage shadow={[270, 200]}>
       <Tree x={520} s={0.9} />
       {/* house */}
       <rect x="120" y="190" width="300" height="210" fill="#f3e3c3" />
@@ -38,22 +46,25 @@ export function Home() {
       <circle className="smoke" cx="363" cy="112" r="6" fill="#fff" opacity=".5" style={{ animationDelay: '1.4s' }} />
       {/* upstairs window: my room, monitor glowing */}
       <rect x="160" y="220" width="78" height="62" rx="3" fill="#1b2a4a" stroke="#fff" strokeWidth="5" />
-      <rect x="182" y="244" width="34" height="22" rx="2" fill="#14b8a6" opacity=".9" />
+      <rect x="182" y="244" width="34" height="22" rx="2" fill="#5eead4" filter="url(#glow)" />
       <rect x="196" y="266" width="6" height="10" fill="#334155" />
       <circle cx="176" cy="262" r="9" fill="#111827" />
-      <rect x="300" y="220" width="78" height="62" rx="3" fill="#fde68a" stroke="#fff" strokeWidth="5" />
+      <rect x="300" y="220" width="78" height="62" rx="3" fill="#ffe7a3" filter="url(#glow)" />
+      <rect x="300" y="220" width="78" height="62" rx="3" fill="none" stroke="#fff" strokeWidth="5" />
       <path d="M300 251 h78 M339 220 v62" stroke="#fff" strokeWidth="3" />
       {/* door */}
       <rect x="244" y="300" width="56" height="100" rx="4" fill="#0f766e" />
       <circle cx="290" cy="352" r="3.5" fill="#fbbf24" />
       <rect x="236" y="296" width="72" height="8" fill="#7f3426" />
+      <circle cx="320" cy="312" r="5" fill="#fff2c4" filter="url(#glow)" />
+      <path d="M300 300 L250 400 H420 Z" fill="url(#spill)" opacity=".5" />
       {/* mailbox + plant */}
       <rect x="438" y="330" width="6" height="70" fill="#475569" />
       <rect x="424" y="316" width="34" height="22" rx="6" fill="#e11d48" />
       <text x="441" y="332" textAnchor="middle" fontSize="10" fontWeight="800" fill="#fff" fontFamily="sans-serif">LAM</text>
       <path d="M130 400 q-4 -26 10 -34 q14 8 10 34 Z" fill="#b45309" />
       <circle cx="140" cy="356" r="16" fill="#3f8f5c" />
-    </svg>
+    </Stage>
   );
 }
 
@@ -62,14 +73,14 @@ export function Academy() {
   // colonnade facade and a full-size football pitch + running track on its roof.
   const cols = Array.from({ length: 12 });
   return (
-    <svg viewBox="0 0 600 400" className="h-full w-auto overflow-visible" aria-hidden>
+    <Stage shadow={[300, 270]}>
       {/* floodlight masts at the back of the roof */}
       {[118, 482].map((x) => (
         <g key={x}>
           <rect x={x - 2.5} y="28" width="5" height="96" fill="#64748b" />
           <rect x={x - 16} y="18" width="32" height="14" rx="2" fill="#334155" />
-          {[0, 1, 2, 3].map((i) => <rect key={i} x={x - 13 + i * 7} y="21" width="5" height="8" fill="#fef9c3" />)}
-          <path d={`M${x - 16} 32 L${x - 50} 120 H${x + 50} L${x + 16} 32 Z`} fill="#fef9c3" opacity=".08" />
+          <g filter="url(#glow)">{[0, 1, 2, 3].map((i) => <rect key={i} x={x - 13 + i * 7} y="21" width="5" height="8" fill="#fffbe0" />)}</g>
+          <path d={`M${x - 16} 32 L${x - 50} 120 H${x + 50} L${x + 16} 32 Z`} fill="url(#beam)" opacity=".5" />
         </g>
       ))}
 
@@ -101,7 +112,7 @@ export function Academy() {
         <g key={f}>
           <rect x="70" y={182 + f * 32.6} width="460" height="3" fill="#0b2a4d" />
           {Array.from({ length: 11 }).map((_, c) => (
-            <rect key={c} x={88 + c * 40} y={190 + f * 32.6} width="22" height="18" fill={(f * 5 + c) % 7 ? '#38bdf8' : '#fde68a'} opacity={(f * 5 + c) % 7 ? 0.28 : 0.85} />
+            <rect key={c} x={88 + c * 40} y={190 + f * 32.6} width="22" height="18" fill={(f * 5 + c) % 7 ? '#38bdf8' : '#ffe9a8'} opacity={(f * 5 + c) % 7 ? 0.28 : 1} filter={(f * 5 + c) % 7 ? undefined : 'url(#glow-soft)'} />
           ))}
         </g>
       ))}
@@ -126,14 +137,14 @@ export function Academy() {
 
       {/* name band */}
       <rect x="216" y="270" width="168" height="30" rx="4" fill="#13213b" stroke="#e3c27a" strokeWidth="1.5" />
-      <text x="300" y="291" textAnchor="middle" fontSize="15" fontWeight="800" fill="#e3c27a" fontFamily="Fraunces, Georgia, serif">TAR UMT ARENA</text>
-    </svg>
+      <text x="300" y="291" textAnchor="middle" fontSize="15" fontWeight="800" fill="#ffe3a0" fontFamily="Fraunces, Georgia, serif" filter="url(#glow-soft)">TAR UMT ARENA</text>
+    </Stage>
   );
 }
 
 export function Workshop() {
   return (
-    <svg viewBox="0 0 600 400" className="h-full w-auto overflow-visible" aria-hidden>
+    <Stage shadow={[300, 220]}>
       <defs><clipPath id="ws-wall"><rect x="110" y="160" width="360" height="240" /></clipPath></defs>
       <rect x="110" y="160" width="360" height="240" fill="#9a4a32" />
       <g clipPath="url(#ws-wall)">
@@ -149,16 +160,17 @@ export function Workshop() {
       <circle className="smoke" cx="415" cy="88" r="7" fill="#e5e7eb" opacity=".5" style={{ animationDelay: '1.5s' }} />
       {/* sign */}
       <rect x="220" y="174" width="140" height="36" rx="5" fill="#13213b" stroke="#e3c27a" strokeWidth="2" />
-      <text x="290" y="198" textAnchor="middle" fontSize="15" fontWeight="800" fill="#5eead4" fontFamily="monospace">&lt;/&gt; WORKSHOP</text>
+      <text x="290" y="198" textAnchor="middle" fontSize="15" fontWeight="800" fill="#a7fff0" fontFamily="monospace" filter="url(#glow)">&lt;/&gt; WORKSHOP</text>
       {/* open garage with server racks */}
       <rect x="170" y="226" width="240" height="174" fill="#0b1020" />
+      <rect x="170" y="226" width="240" height="174" fill="url(#garage)" />
       {[0, 1, 2].map((i) => (
         <g key={i} transform={`translate(${196 + i * 72} 246)`}>
           <rect width="52" height="154" rx="3" fill="#1e293b" stroke="#334155" strokeWidth="2" />
           {[0, 1, 2, 3, 4, 5, 6].map((j) => (
             <g key={j}>
               <rect x="6" y={10 + j * 20} width="40" height="12" rx="2" fill="#0f172a" />
-              <circle className="led" cx="38" cy={16 + j * 20} r="2.2" fill={j % 3 ? '#22c55e' : '#14b8a6'} style={{ animationDelay: `${(i * 7 + j) * 0.17}s` }} />
+              <circle className="led" cx="38" cy={16 + j * 20} r="2.4" filter="url(#glow-soft)" fill={j % 3 ? '#4ade80' : '#2dd4bf'} style={{ animationDelay: `${(i * 7 + j) * 0.17}s` }} />
               <circle cx="31" cy={16 + j * 20} r="2" fill="#f59e0b" opacity=".7" />
             </g>
           ))}
@@ -172,7 +184,7 @@ export function Workshop() {
       </g>
       <rect x="490" y="366" width="64" height="34" rx="4" fill="#dc2626" />
       <rect x="508" y="358" width="28" height="10" rx="3" fill="none" stroke="#7f1d1d" strokeWidth="4" />
-    </svg>
+    </Stage>
   );
 }
 
@@ -182,7 +194,7 @@ export function QuestBoard() {
     [190, 274, '#e0f2fe', 2], [290, 280, '#fef9c3', -3], [380, 270, '#ede9fe', 4],
   ];
   return (
-    <svg viewBox="0 0 600 400" className="h-full w-auto overflow-visible" aria-hidden>
+    <Stage shadow={[300, 200]}>
       <Tree x={540} s={0.85} c="#2f7d4f" />
       <rect x="140" y="160" width="12" height="240" fill="#6b4632" />
       <rect x="448" y="160" width="12" height="240" fill="#6b4632" />
@@ -203,7 +215,7 @@ export function QuestBoard() {
       <Lantern x={120} y={240} />
       <rect x="470" y="350" width="40" height="50" rx="6" fill="#92400e" />
       <path d="M470 362 h40 M470 388 h40" stroke="#451a03" strokeWidth="3" />
-    </svg>
+    </Stage>
   );
 }
 
@@ -217,7 +229,7 @@ export function City() {
     return side < 0 ? 196 + t * 36 : 404 - t * 36;
   };
   return (
-    <svg viewBox="0 0 600 400" className="h-full w-auto overflow-visible" aria-hidden>
+    <Stage shadow={[300, 250]}>
       <defs>
         <linearGradient id="x106-glass" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#1d4f8a" /><stop offset=".45" stopColor="#3b82c4" /><stop offset=".55" stopColor="#2a6aab" /><stop offset="1" stopColor="#163e6e" />
@@ -235,7 +247,7 @@ export function City() {
       {[0, 1, 2, 3, 4, 5].map((r) => [0, 1, 2].map((c) => <rect key={`b${r}${c}`} x={484 + c * 26} y={236 + r * 24} width="16" height="12" fill="#fde68a" opacity={(r + c) % 3 ? 0.35 : 0.9} />))}
 
       {/* crown glow (the "Lantern") */}
-      <ellipse cx="300" cy="-10" rx="120" ry="90" fill="url(#x106-lantern)" />
+      <ellipse cx="300" cy="-10" rx="170" ry="130" fill="url(#x106-lantern)" />
 
       {/* tapering blue-glass shaft */}
       <path d="M196 400 L232 40 H368 L404 400 Z" fill="url(#x106-glass)" />
@@ -254,11 +266,11 @@ export function City() {
       {/* lit office windows */}
       {[[3, 1], [7, -2], [11, 2], [15, -1], [19, 0], [22, 2]].map(([f, k]) => {
         const y = 52 + f * 13.4 + 2;
-        return <rect key={f} x={300 + k * 22 - 8} y={y} width="16" height="9" fill="#fde68a" opacity=".85" />;
+        return <rect key={f} x={300 + k * 22 - 8} y={y} width="16" height="9" fill="#ffeeb0" filter="url(#glow-soft)" />;
       })}
 
       {/* Ant International, high up in the tower */}
-      <rect x={xAt(98, -1) + 4} y="94" width={xAt(98, 1) - xAt(98, -1) - 8} height="12" fill="#fde68a" opacity=".95" />
+      <rect x={xAt(98, -1) + 4} y="94" width={xAt(98, 1) - xAt(98, -1) - 8} height="12" fill="#ffe9a0" filter="url(#glow)" />
       <line x1={xAt(100, 1) + 2} y1="100" x2="462" y2="100" stroke="#e3c27a" strokeWidth="1.5" strokeDasharray="4 3" />
       <circle cx={xAt(100, 1) + 2} cy="100" r="3.5" fill="#e3c27a" />
       <rect x="462" y="84" width="160" height="32" rx="7" fill="#13213b" stroke="#e3c27a" strokeWidth="1.5" />
@@ -274,7 +286,8 @@ export function City() {
         <path d="M262 -6 L281 -29 L300 -6 L319 -29 L338 -6" strokeOpacity=".7" />
         <path d="M262 -6 L281 17 L300 -6 L319 17 L338 -6" strokeOpacity=".7" />
       </g>
-      <path d="M248 -52 H352" stroke="#e0f2fe" strokeWidth="3" />
+      <path d="M248 -52 H352" stroke="#f0faff" strokeWidth="3" filter="url(#glow)" />
+      <circle className="led" cx="300" cy="-58" r="3" fill="#ff4d6d" filter="url(#glow)" />
       <path d="M232 40 H368" stroke="#0b2a4d" strokeWidth="2" />
 
       {/* podium + lobby */}
@@ -283,7 +296,7 @@ export function City() {
       <rect x="344" y="364" width="60" height="36" fill="#38bdf8" opacity=".35" />
       <rect x="236" y="300" width="128" height="22" rx="3" fill="#f8fafc" />
       <text x="300" y="315" textAnchor="middle" fontSize="11" fontWeight="800" fill="#13213b" fontFamily="sans-serif" letterSpacing="1">EXCHANGE 106</text>
-    </svg>
+    </Stage>
   );
 }
 
@@ -295,7 +308,7 @@ const SHOT_AIR = { cx: [285, 360, 420, 450, 462, 470], cy: [356, 150, 250, 330, 
 
 export function Park({ shot }) {
   return (
-    <svg viewBox="0 0 600 400" className="h-full w-auto overflow-visible" aria-hidden>
+    <Stage shadow={[330, 270]}>
       <Tree x={110} s={1.15} c="#2f7d4f" />
       {/* pond */}
       <ellipse cx="300" cy="392" rx="120" ry="16" fill="#38bdf8" />
@@ -339,13 +352,13 @@ export function Park({ shot }) {
           />
         </motion.g>
       )}
-    </svg>
+    </Stage>
   );
 }
 
 export function Crossroads() {
   return (
-    <svg viewBox="0 0 600 400" className="h-full w-auto overflow-visible" aria-hidden>
+    <Stage shadow={[340, 250]}>
       {/* tent */}
       <path d="M440 400 L520 270 L600 400 Z" fill="#b7862c" />
       <path d="M520 270 L504 400 h32 Z" fill="#78350f" />
@@ -359,14 +372,14 @@ export function Crossroads() {
       <g transform="translate(370 400)">
         <rect x="-34" y="-12" width="68" height="10" rx="5" fill="#57351c" transform="rotate(12)" />
         <rect x="-34" y="-12" width="68" height="10" rx="5" fill="#6b4226" transform="rotate(-12)" />
-        <ellipse cx="0" cy="-10" rx="16" ry="6" fill="#f97316" opacity=".55" className="led" />
+        <ellipse cx="0" cy="-10" rx="16" ry="6" fill="#fb923c" filter="url(#glow)" className="led" />
         <circle className="smoke" cx="0" cy="-22" r="9" fill="#e5e7eb" opacity=".55" />
         <circle className="smoke" cx="0" cy="-22" r="7" fill="#e5e7eb" opacity=".45" style={{ animationDelay: '1s' }} />
         <circle className="smoke" cx="0" cy="-22" r="6" fill="#e5e7eb" opacity=".4" style={{ animationDelay: '2s' }} />
       </g>
       <Lantern x={566} y={250} />
-    </svg>
+    </Stage>
   );
 }
 
-export const SCENES = [Home, Academy, Workshop, QuestBoard, City, Park, Crossroads];
+export const SCENES = [Home, Academy, Workshop, QuestBoard, City, Park, Crossroads].map((S) => memo(S));

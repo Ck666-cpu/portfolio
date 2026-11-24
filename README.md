@@ -33,7 +33,8 @@ All personal content is in `src/data/portfolio.js`. Search for `TODO` to find wh
 ```
 src/
 ├─ components/
-│  ├─ world/     World (scroll engine, sky, parallax, map), Character, Scenes, Panels
+│  ├─ world/     World (scroll engine, parallax, map), Atmosphere (sky FX, skyline, particles, intro),
+│  │             Stage (scene lighting), Character, Scenes, Panels
 │  └─            ProjectModal, Cover, ItemArt, Toast
 ├─ data/portfolio.js
 ├─ hooks/        useTyping

@@ -8,7 +8,7 @@ const HAIR = {
 export default function Friend({ person, waving = true }) {
   const { initials, glasses, hair = 'short', shirt, ink = '#fff' } = person;
   return (
-    <svg viewBox="0 0 60 120" className="h-full w-auto overflow-visible" role="img" aria-label={`${person.initials || 'Friend'}, ${person.tag}`}>
+    <svg viewBox="0 0 60 120" className="h-full w-auto overflow-visible" style={{ filter: 'drop-shadow(0 6px 8px rgba(0,0,0,.35))' }} role="img" aria-label={`${person.initials || 'Friend'}, ${person.tag}`}>
       <ellipse cx="30" cy="117" rx="16" ry="3" fill="#000" opacity=".22" />
       {/* legs + shoes */}
       <rect x="21" y="78" width="8" height="34" rx="3" fill="#1e293b" />
