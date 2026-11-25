@@ -8,22 +8,24 @@ import { friends, profile } from '../../data/portfolio.js';
 import Friend from './Friend.jsx';
 import SkillTree from './SkillTree.jsx';
 import { LightingDefs } from './Stage.jsx';
-import { Aurora, Clouds, GodRays, Intro, LensFlare, Particles, PostFX, Skyline, Stars } from './Atmosphere.jsx';
+import { ArrivalSweep, Aurora, Birds, Clouds, GodRays, Intro, LensFlare, Particles, PostFX, Ranges, Skyline, Stars } from './Atmosphere.jsx';
 
 const N = STOPS.length;
 const P = STOPS.map((_, i) => i / (N - 1)); // scroll progress at each stop
 // The walk is the morning of Jeff's life: before dawn → first light → sunrise → bright morning
-const SKY_TOP = ['#070b1c', '#121c40', '#25346a', '#3f5fa0', '#5f92d0', '#6eaee8', '#5aaef0'];
-const SKY_BOT = ['#16224a', '#34427a', '#b77892', '#f19d78', '#fbc48c', '#fde2b6', '#e3f2ff'];
-const FAR1 = ['#141c36', '#232c55', '#4a4874', '#80769a', '#a4a3c0', '#a9bfd6', '#a9c4dc'];
-const FAR2 = ['#0d1428', '#18203f', '#33335a', '#5d5679', '#7d84a6', '#86a2c0', '#88a8c6'];
-const GRASS = ['#17251f', '#22362a', '#3a5236', '#58783f', '#6c9a4c', '#77ad5b', '#7db462'];
-const PATH = ['#3a3846', '#5a5260', '#8a7a78', '#c2a888', '#dcc39a', '#e6d2a8', '#ead8ae'];
-const GRASS_D = ['#08100d', '#0e1a14', '#1b2a1c', '#2c4220', '#355a26', '#3d6a2c', '#447432'];
-const SKYLINE = ['#0f1630', '#1b2248', '#3a3a62', '#655f84', '#8a90b0', '#93acc8', '#96b2cc'];
+const SKY_TOP = ['#070b1c', '#121c40', '#25346a', '#3a5aa6', '#3a7fd6', '#2f86e4', '#2a7fe2'];
+const SKY_BOT = ['#16224a', '#34427a', '#c27894', '#f7956a', '#ffc685', '#cfe6ff', '#b3dcff'];
+const FAR1 = ['#141c36', '#232c55', '#4a4874', '#7d6f98', '#8e98c0', '#7fa3cf', '#7ba8d4'];
+const FAR2 = ['#0d1428', '#18203f', '#33335a', '#5a5276', '#5f7aa0', '#4f7fae', '#4c84b4'];
+const GRASS = ['#17251f', '#22362a', '#3a5236', '#56783c', '#5f9c42', '#62ad46', '#66b54a'];
+const PATH = ['#3a3846', '#5a5260', '#8a7a78', '#c4a284', '#d8b98e', '#dfc39a', '#e2c8a0'];
+const GRASS_D = ['#08100d', '#0e1a14', '#1b2a1c', '#2c4220', '#2f5a22', '#336a26', '#37722a'];
+const SKYLINE = ['#0f1630', '#1b2248', '#3a3a62', '#655f84', '#7d88b0', '#7699c2', '#7a9ec6'];
 const CLOUD_L = ['#3a4878', '#5a5f96', '#f5a9b8', '#ffd0a8', '#fff1dc', '#ffffff', '#ffffff'];
 const CLOUD_D = ['#141a36', '#252a55', '#6b4f7d', '#c47c83', '#d6a8a0', '#c9d6ea', '#c4d8f0'];
-const HAZE = ['rgba(22,34,74,0.9)', 'rgba(52,66,122,0.85)', 'rgba(183,120,146,0.6)', 'rgba(241,157,120,0.55)', 'rgba(251,196,140,0.5)', 'rgba(253,226,182,0.45)', 'rgba(227,242,255,0.5)'];
+const FAR0 = ['#1a2242', '#2a3462', '#5a5684', '#9682a8', '#a8b2d4', '#a3bfe0', '#a6c4e4'];
+const SNOW = ['#3a4670', '#56608e', '#e8b8c8', '#ffd9c4', '#fff4ea', '#ffffff', '#ffffff'];
+const HAZE = ['rgba(22,34,74,0.9)', 'rgba(52,66,122,0.85)', 'rgba(183,120,146,0.6)', 'rgba(241,157,120,0.55)', 'rgba(255,198,140,0.35)', 'rgba(205,228,255,0.28)', 'rgba(190,222,255,0.28)'];
 
 const CX = 'clamp(110px, 24vw, 360px)'; // where the character stands
 const SH_VH = 0.52; // scene height: min(52svh, 60vw)
@@ -47,17 +49,6 @@ const SPOTS_NARROW = [[0.75, 'f'], [-0.7, 'b'], [1.4, 'b'], [2.05, 'f'], [2.7, '
 const TILT = [-4, 3, -2, 4, -3, 2];
 // Click the Workshop building to open the skill tree (outline as fractions of SH, from Jeff's spot)
 const WORKSHOP_BOX = { left: -0.44, width: 0.97, height: 0.76 };
-
-function Mountains({ fill, peaks }) {
-  return (
-    <svg viewBox="0 0 1000 300" preserveAspectRatio="none" className="h-full w-[100vw] shrink-0">
-      <motion.path style={{ fill }} d={peaks} />
-      <path d={peaks} fill="url(#mtn-shade)" />
-    </svg>
-  );
-}
-const PEAKS1 = 'M0 300 V170 L90 110 L170 160 L260 70 L360 150 L450 100 L540 160 L640 60 L740 140 L830 95 L920 150 L1000 170 V300 Z';
-const PEAKS2 = 'M0 300 V210 Q80 160 160 200 T320 190 Q400 140 480 185 T640 180 Q720 150 800 195 T1000 210 V300 Z';
 
 function Lamp({ glow }) {
   return (
@@ -88,6 +79,10 @@ export default function World({ openProject, notify }) {
   const sky = useMotionTemplate`linear-gradient(to bottom, ${top}, ${bot})`;
   const far1 = useTransform(p, P, FAR1);
   const far2 = useTransform(p, P, FAR2);
+  const far0 = useTransform(p, P, FAR0);
+  const snow = useTransform(p, P, SNOW);
+  const far0X = useTransform(s, (v) => `${-v * 9}vw`);
+  const birds = useTransform(p, [0.3, 0.45, 0.85, 1], [0, 1, 1, 0.4]);
   const grass = useTransform(p, P, GRASS);
   const path = useTransform(p, P, PATH);
   const night = useTransform(p, [0, 0.2, 0.45, 0.6], [0.3, 0.22, 0.06, 0]);
@@ -235,26 +230,32 @@ export default function World({ openProject, notify }) {
         <Clouds x={cloudFarX} light={cloudL} shade={cloudD} top="6svh" scale={0.8} count={7} opacity={0.75} />
 
         <motion.div aria-hidden className="absolute inset-x-0 h-[50svh]" style={{ opacity: dawnGlow, bottom: G, background: 'radial-gradient(ellipse 60% 70% at 55% 100%, rgba(253,186,116,0.75), transparent 70%)' }} />
-        {/* far hills + KL skyline */}
-        <motion.div className="absolute inset-x-0 flex will-change-transform" style={{ x: far1X, bottom: `calc(${G} + 4svh)`, height: '34svh' }}>
-          {[0, 1, 2].map((i) => <Mountains key={i} fill={far1} peaks={PEAKS1} />)}
-        </motion.div>
-        <motion.div aria-hidden className="pointer-events-none absolute inset-x-0 h-[16svh]" style={{ bottom: `calc(${G} + 4svh)`, background: hazeBg }} />
+        <Birds opacity={birds} />
+        {/* mountain ranges, far to near, with haze between them + the KL skyline */}
+        <Ranges x={far0X} fill={far0} snowFill={snow} width={160} seed={3} base={250} amp={190} step={150} kind="snow" bottom={`calc(${G} + 8svh)`} height="36svh" />
+        <motion.div aria-hidden className="pointer-events-none absolute inset-x-0 h-[18svh]" style={{ bottom: `calc(${G} + 6svh)`, background: hazeBg }} />
+        <Ranges x={far1X} fill={far1} width={200} seed={11} base={260} amp={150} step={110} kind="peak" bottom={`calc(${G} + 3svh)`} height="28svh" />
+        <motion.div aria-hidden className="pointer-events-none absolute inset-x-0 h-[14svh]" style={{ bottom: `calc(${G} + 2svh)`, background: hazeBg }} />
         <Skyline x={skylineX} fill={skylineFill} windows={cityLights} bottom={`calc(${G} + 1svh)`} height="24svh" />
-        <motion.div aria-hidden className="pointer-events-none absolute inset-x-0 h-[12svh]" style={{ bottom: G, background: hazeBg }} />
-        <motion.div className="absolute inset-x-0 flex will-change-transform" style={{ x: far2X, bottom: G, height: '20svh' }}>
-          {[0, 1, 2, 3, 4].map((i) => <Mountains key={i} fill={far2} peaks={PEAKS2} />)}
-        </motion.div>
+        <motion.div aria-hidden className="pointer-events-none absolute inset-x-0 h-[10svh]" style={{ bottom: G, background: hazeBg }} />
+        <Ranges x={far2X} fill={far2} width={340} seed={23} base={240} amp={110} step={140} kind="hill" bottom={`calc(${G} - 1px)`} height="16svh" />
         <Clouds x={cloudNearX} light={cloudL} shade={cloudD} top="calc(100svh - 22svh - 16svh)" scale={1.4} count={6} opacity={0.35} blur={3} />
 
         {/* ground */}
         <motion.div className="absolute inset-x-0 bottom-0 overflow-hidden" style={{ height: G, background: ground }}>
-          <div className="absolute inset-x-0 top-0 h-[3px] bg-white/10" />
+          {/* far verge */}
+          <motion.div className="meadow absolute inset-y-0 left-0 w-[900vw] opacity-60" style={{ x: worldX, backgroundSize: '60px 30px' }} />
+          {/* the path: paving stones, a lit top edge and a kerb in shadow */}
           <motion.div className="absolute inset-x-0 top-[22%] h-[30%]" style={{ backgroundColor: path }}>
-            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,.22),transparent_25%,transparent_70%,rgba(0,0,0,.35))]" />
-            <motion.div className="absolute inset-y-0 left-0 w-[900vw] opacity-40" style={{ x: worldX, backgroundImage: 'linear-gradient(90deg, rgba(0,0,0,.35) 1px, transparent 1px), linear-gradient(rgba(0,0,0,.25) 1px, transparent 1px)', backgroundSize: '64px 50%' }} />
+            <motion.div className="paving absolute inset-y-0 left-0 w-[900vw]" style={{ x: worldX }} />
+            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,.25),transparent_14%,transparent_80%,rgba(0,0,0,.18))]" />
+            <div className="absolute inset-x-0 top-0 h-[2px] bg-white/25" />
           </motion.div>
-          <motion.div className="absolute inset-y-0 left-0 w-[900vw]" style={{ x: worldX, backgroundImage: 'radial-gradient(rgba(0,0,0,0.18) 1.5px, transparent 2px), radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1.5px)', backgroundSize: '38px 22px, 23px 17px' }} />
+          <motion.div className="absolute inset-x-0 top-[52%] h-[5%]" style={{ backgroundColor: path, filter: 'brightness(.62)' }} />
+          {/* meadow in front, with grass spilling over the kerb */}
+          <motion.div className="meadow absolute inset-x-0 bottom-0 top-[57%] left-0 w-[900vw]" style={{ x: worldX }} />
+          <motion.div className="tufts absolute left-0 top-[44%] h-[14%] w-[900vw]" style={{ x: worldX, backgroundColor: grass }} />
+          <motion.div className="tufts absolute left-0 top-[16%] h-[8%] w-[900vw] opacity-80" style={{ x: worldX, backgroundColor: grassD }} />
           {/* light pool around Jeff */}
           <div className="absolute top-[10%] h-[60%] w-[34svh] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgba(255,230,170,.22),transparent)]" style={{ left: CX }} />
         </motion.div>
@@ -381,6 +382,7 @@ export default function World({ openProject, notify }) {
         </motion.div>
         </motion.div>
         <LensFlare xn={sunXn} yn={sunYn} opacity={flare} />
+        <ArrivalSweep active={active} />
         <PostFX />
 
         {/* top bar with the route map */}
