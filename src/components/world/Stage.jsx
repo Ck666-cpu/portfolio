@@ -56,6 +56,10 @@ export const LightingDefs = memo(function LightingDefs() {
           <stop offset=".6" stopColor="#000" stopOpacity="0" />
           <stop offset="1" stopColor="#000" stopOpacity=".35" />
         </linearGradient>
+        <linearGradient id="warm" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#ffe3a0" />
+          <stop offset="1" stopColor="#f2a65a" />
+        </linearGradient>
         <radialGradient id="lamp-halo" cx=".5" cy=".5" r=".5">
           <stop offset="0" stopColor="#ffd77a" stopOpacity=".55" />
           <stop offset="1" stopColor="#ffd77a" stopOpacity="0" />

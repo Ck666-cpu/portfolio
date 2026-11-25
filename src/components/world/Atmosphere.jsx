@@ -247,51 +247,6 @@ export const Particles = memo(function Particles({ p, s }) {
   return <canvas ref={ref} aria-hidden className="pointer-events-none absolute inset-0 z-[12] h-full w-full" />;
 });
 
-/* ── Giant chapter title in the sky ─────────────────────── */
-const CHAPTERS = [
-  ['00', 'Prologue'],
-  ['01', 'The Arena'],
-  ['02', 'The Workshop'],
-  ['03', 'The Quest Board'],
-  ['04', 'The City'],
-  ['05', 'The Park'],
-  ['06', 'Sunrise'],
-];
-export const ChapterTitle = memo(function ChapterTitle({ active }) {
-  return (
-    <div aria-hidden className="pointer-events-none absolute left-[3vw] top-[78px] z-[1] select-none md:top-[84px]">
-      <AnimatePresence mode="wait">
-        {active >= 0 && (
-          <motion.div key={active} initial="out" animate="in" exit="gone" className="relative">
-            <div className="flex overflow-hidden">
-              {CHAPTERS[active][0].split('').map((ch, i) => (
-                <motion.span
-                  key={i}
-                  className="chapter-num"
-                  variants={{
-                    out: { y: '110%', rotate: 8, opacity: 0 },
-                    in: { y: '0%', rotate: 0, opacity: 1, transition: { delay: 0.05 + i * 0.08, duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
-                    gone: { y: '-60%', opacity: 0, transition: { duration: 0.3 } },
-                  }}
-                >
-                  {ch}
-                </motion.span>
-              ))}
-            </div>
-            <motion.div
-              className="mt-1 flex items-center gap-3 pl-2"
-              variants={{ out: { opacity: 0, x: -30 }, in: { opacity: 1, x: 0, transition: { delay: 0.35, duration: 0.6 } }, gone: { opacity: 0, transition: { duration: 0.2 } } }}
-            >
-              <span className="h-px w-12 bg-gradient-to-r from-transparent to-gold-soft" />
-              <span className="chapter-word">{CHAPTERS[active][1]}</span>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-});
-
 /* ── Film grain + vignette ──────────────────────────────── */
 export const PostFX = memo(function PostFX() {
   return (
@@ -370,5 +325,120 @@ export const Intro = memo(function Intro() {
         </motion.div>
       )}
     </AnimatePresence>
+  );
+});
+
+/* ── Mountain ranges: one seamless SVG per layer ───────── */
+// Generated once from a seed: peaks with a sunlit face, optional snowcaps,
+// or rolling hills topped with a treeline. `width` is in vw (10 units per vw).
+function buildRange({ width, seed, base, amp, step, kind }) {
+  const W = width * 10;
+  const pts = [];
+  let x = -step;
+  let i = 0;
+  while (x < W + step * 2) {
+    const peak = i % 2 === 0;
+    const y = peak ? base - amp * (0.45 + rnd(i, seed) * 0.55) : base - amp * rnd(i, seed + 1) * 0.25;
+    pts.push([x, y, peak]);
+    x += step * (0.6 + rnd(i, seed + 2) * 0.8);
+    i++;
+  }
+  let d = `M${pts[0][0]} 300 L${pts[0][0]} ${pts[0][1]}`;
+  if (kind === 'hill') {
+    for (let k = 1; k < pts.length - 1; k++) {
+      const mx = (pts[k][0] + pts[k + 1][0]) / 2;
+      const my = (pts[k][1] + pts[k + 1][1]) / 2;
+      d += ` Q${pts[k][0]} ${pts[k][1]} ${mx} ${my}`;
+    }
+  } else {
+    for (let k = 1; k < pts.length; k++) d += ` L${pts[k][0]} ${pts[k][1]}`;
+  }
+  d += ` L${pts[pts.length - 1][0]} 300 Z`;
+  const lit = [];
+  const snow = [];
+  if (kind !== 'hill') {
+    for (let k = 1; k < pts.length - 1; k++) {
+      const [px, py, peak] = pts[k];
+      if (!peak) continue;
+      const [lx, ly] = pts[k - 1];
+      const [rx, ry] = pts[k + 1];
+      // the face turned towards the light
+      lit.push(`M${lx} ${ly} L${px} ${py} L${px + (rx - px) * 0.18} 300 L${lx} 300 Z`);
+      if (kind === 'snow' && py < base - amp * 0.62) {
+        const f = 0.24;
+        const a = [px + (lx - px) * f, py + (ly - py) * f];
+        const b = [px + (rx - px) * f, py + (ry - py) * f];
+        const j = (b[0] - a[0]) / 4;
+        snow.push(`M${px} ${py} L${a[0]} ${a[1]} L${a[0] + j} ${a[1] - 6} L${a[0] + j * 2} ${a[1] + 4} L${a[0] + j * 3} ${b[1] - 5} L${b[0]} ${b[1]} Z`);
+      }
+    }
+  }
+  const trees = [];
+  if (kind === 'hill') {
+    // sample the ridge (through the curve midpoints) and plant a treeline on it
+    const mids = [];
+    for (let k = 1; k < pts.length - 1; k++) mids.push([(pts[k][0] + pts[k + 1][0]) / 2, (pts[k][1] + pts[k + 1][1]) / 2, pts[k]]);
+    for (let t = 0; t < W; t += 9 + rnd(t, seed + 5) * 10) {
+      const m = mids.findIndex((q) => q[0] > t);
+      if (m < 1) continue;
+      const [x0, y0] = mids[m - 1];
+      const [x1, y1, c] = mids[m];
+      const u = (t - x0) / (x1 - x0);
+      // quadratic bezier between midpoints with the ridge point as control
+      const y = (1 - u) * (1 - u) * y0 + 2 * (1 - u) * u * c[1] + u * u * y1;
+      const h = 14 + rnd(t, seed + 6) * 22;
+      const w = 5 + rnd(t, seed + 7) * 4;
+      trees.push(`M${t - w} ${y + 8} L${t} ${y - h} L${t + w} ${y + 8} Z`);
+    }
+  }
+  return { d, lit: lit.join(' '), snow: snow.join(' '), trees: trees.join(' '), W };
+}
+
+export const Ranges = memo(function Ranges({ x, fill, snowFill, width, seed, base = 200, amp = 140, step = 120, kind = 'peak', bottom, height }) {
+  const r = buildRange({ width, seed, base, amp, step, kind });
+  return (
+    <motion.div aria-hidden className="pointer-events-none absolute left-0 will-change-transform" style={{ x, bottom, height, width: `${width}vw` }}>
+      <svg viewBox={`0 0 ${r.W} 300`} preserveAspectRatio="none" className="h-full w-full overflow-visible">
+        {r.trees && <motion.path d={r.trees} style={{ fill }} />}
+        <motion.path d={r.d} style={{ fill }} />
+        {r.lit && <path d={r.lit} fill="#fff" opacity=".09" />}
+        {r.snow && <motion.path d={r.snow} style={{ fill: snowFill }} opacity=".9" />}
+        <path d={r.d} fill="url(#mtn-shade)" />
+      </svg>
+    </motion.div>
+  );
+});
+
+/* ── Birds crossing the morning sky ────────────────────── */
+export const Birds = memo(function Birds({ opacity }) {
+  const visibility = useVis(opacity);
+  const flock = [[0, 0], [22, 10], [-18, 12], [40, 22], [-34, 26], [58, 34]];
+  return (
+    <motion.div aria-hidden className="pointer-events-none absolute inset-x-0 top-[14svh] h-[20svh]" style={{ opacity, visibility }}>
+      {[0, 1].map((g) => (
+        <div key={g} className="bird-flock absolute" style={{ top: `${g * 7}svh`, animationDelay: `${g * -11}s`, animationDuration: `${26 + g * 6}s` }}>
+          {flock.map(([bx, by], i) => (
+            <svg key={i} viewBox="0 0 20 10" className="absolute h-[10px] w-[20px] overflow-visible" style={{ left: bx * (g ? 0.8 : 1), top: by * (g ? 0.8 : 1) }}>
+              <path className="wing" d="M0 4 Q5 0 10 5 Q15 0 20 4" stroke="#1e293b" strokeWidth="1.6" fill="none" strokeLinecap="round" style={{ animationDelay: `${i * 0.13}s` }} />
+            </svg>
+          ))}
+        </div>
+      ))}
+    </motion.div>
+  );
+});
+
+/* ── A sweep of light when Jeff arrives somewhere ──────── */
+export const ArrivalSweep = memo(function ArrivalSweep({ active }) {
+  if (active < 0 || reduced()) return null;
+  return (
+    <motion.div
+      key={active}
+      aria-hidden
+      className="pointer-events-none absolute inset-y-0 z-[26] w-[40vw] -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent"
+      initial={{ left: '-50vw', opacity: 0 }}
+      animate={{ left: '120vw', opacity: [0, 1, 1, 0] }}
+      transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1], delay: 0.15 }}
+    />
   );
 });
