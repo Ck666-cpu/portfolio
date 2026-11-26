@@ -12,15 +12,18 @@ npm run build      # production build → dist/
 
 ## Update content
 
-All personal content is in `src/data/portfolio.js`. Search for `TODO` to find what's still missing:
+All personal content is in `src/data/portfolio.js`. The CV served by the site is `public/cv.pdf`; replace it when your résumé changes.
 
-- **Projects** — the 4 cards are samples (marked with a yellow "Sample" badge). Replace them with your real projects and set `sample: false`.
-- **Photo** — put a square WebP (≥600×600) in `src/assets/`, import it in `portfolio.js` and set `profile.photo`.
-- **CV** — export your Overleaf resume as PDF and save it as `public/cv.pdf`.
-- **Internship bullets** — replace with 2–3 specific achievements (numbers if you have them).
-- **Education** — add start year and any FYP / awards.
-- **Contact form** — create a free form at formspree.io and paste its ID into `formspreeId`.
-- **OG image** — add `public/og-image.png` (1200×630) so links preview well on LinkedIn / WhatsApp.
+Optional extras:
+
+- **Contact form**: create a free form at formspree.io and paste its ID into `formspreeId`. Until then the form opens the visitor's email app with the message filled in.
+- **OG image**: add `public/og-image.png` (1200×630) so links preview well on LinkedIn / WhatsApp.
+
+## Extras
+
+- **Quick view** (`src/components/QuickView.jsx`): a printable one-page résumé, opened from the top bar or linked directly as `/#quick`.
+- **Live demo** (`src/components/ClaimFlowDemo.jsx`): an in-browser simulation of ClaimFlow's transactional outbox + Kafka flow, opened from the Quest Board, the ClaimFlow project, or `/#demo`.
+- **Lite mode**: drops the heavy light and particle effects. It switches on automatically when scrolling is slow, and visitors can toggle it with ✦ in the top bar or in the footer.
 
 ## Deploy to Vercel
 

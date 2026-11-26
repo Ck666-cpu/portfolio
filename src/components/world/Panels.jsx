@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Bot, CalendarCheck, Copy, Download, Ear, GraduationCap, Heart, LoaderCircle, Mail, MapPin, Rocket, Search, Send, Star } from 'lucide-react';
 import { FaAws, FaDocker, FaGitAlt, FaGithub, FaJava, FaLinkedin, FaLinux, FaPython } from 'react-icons/fa';
 import { SiApachekafka, SiElasticsearch, SiSolidity, SiSpringboot } from 'react-icons/si';
-import { Clock, Database, Drama, Globe, GraduationCap as Grad, Lightbulb, MessagesSquare, Network, Plug, Share2, Shuffle, Terminal, Users, Workflow } from 'lucide-react';
+import { Award, Clock, Database, Drama, FileText, FlaskConical, Globe, Play, GraduationCap as Grad, Lightbulb, MessagesSquare, Network, Plug, Share2, Shuffle, Terminal, Users, Workflow } from 'lucide-react';
 import { character, experience, formspreeId, interests, principles, profile, projects, skills } from '../../data/portfolio.js';
 import { useTyping } from '../../hooks/useTyping.js';
 import ItemArt from '../ItemArt.jsx';
@@ -11,14 +11,14 @@ const SKILL_ICONS = {
   java: FaJava, spring: SiSpringboot, sql: Database, python: FaPython, kafka: SiApachekafka,
   aws: FaAws, docker: FaDocker, cicd: Workflow, git: FaGitAlt, linux: FaLinux,
   ai: Bot, playwright: Drama, chat: MessagesSquare, team: Users, bulb: Lightbulb, globe: Globe,
-  distributed: Share2, elastic: SiElasticsearch, solidity: SiSolidity, cli: Terminal, mcp: Plug, grad: Grad, ear: Ear, shuffle: Shuffle, clock: Clock,
+  distributed: Share2, elastic: SiElasticsearch, solidity: SiSolidity, cli: Terminal, mcp: Plug, grad: Grad, ear: Ear, shuffle: Shuffle, clock: Clock, test: FlaskConical,
 };
 const P_ICONS = { search: Search, rocket: Rocket, bot: Bot, ear: Ear };
 
 const H = ({ children }) => <h2 className="font-display text-[26px] font-bold leading-tight text-white sm:text-[30px]">{children}</h2>;
 const P = ({ children, className = '' }) => <p className={`mt-3 text-[15px] leading-relaxed text-slate-300 sm:text-base ${className}`}>{children}</p>;
 
-function HomePanel({ go }) {
+function HomePanel({ go, openQuick }) {
   const typed = useTyping(profile.roles);
   return (
     <>
@@ -35,6 +35,7 @@ function HomePanel({ go }) {
       <div className="mt-5 flex flex-wrap gap-2.5">
         <button onClick={() => go(1)} className="dbtn-gold">Start the journey →</button>
         <button onClick={() => go(3)} className="dbtn-line">See projects</button>
+        <button onClick={openQuick} className="dbtn-line"><FileText size={16} /> Quick view</button>
         <a href={profile.cvUrl} download className="dbtn-line"><Download size={16} /> CV</a>
       </div>
       <div className="mt-4 flex gap-2">
@@ -51,7 +52,11 @@ function AcademyPanel() {
   return (
     <>
       <H>{edu.title}</H>
-      <p className="mt-1 font-semibold text-accent-soft">TAR UMT · {edu.end} · CGPA 3.91</p>
+      <p className="mt-1 font-semibold text-accent-soft">TAR UMT · {edu.start} – {edu.end} · CGPA 3.91 / 4.00</p>
+      <ul className="mt-3 flex flex-wrap gap-2">
+        {edu.honours.map((h) => <li key={h} className="dchip"><Award size={14} className="text-gold-soft" /> {h}</li>)}
+        {profile.certifications.map((c) => <li key={c} className="dchip"><Award size={14} className="text-accent-soft" /> {c}</li>)}
+      </ul>
       <P>{profile.bio[0]}</P>
       <P>{profile.bio[1]}</P>
       <p className="mt-5 text-xs font-semibold uppercase tracking-wider text-gold-soft/80">How I work</p>
@@ -88,11 +93,18 @@ function WorkshopPanel({ openTree }) {
   );
 }
 
-function QuestPanel({ openProject }) {
+function QuestPanel({ openProject, openDemo }) {
   return (
     <>
       <H>Selected projects</H>
       <P>Pick a quest to read the problem, my role, the stack and the outcome.</P>
+      <button onClick={openDemo} className="demo-callout group mt-4 flex w-full items-center gap-3 rounded-lg p-3 text-left">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-accent-soft/20 text-accent-soft"><Play size={18} fill="currentColor" /></span>
+        <span className="flex-1">
+          <span className="block font-semibold text-white">Live demo: ClaimFlow in your browser</span>
+          <span className="block text-[13px] text-slate-400">Submit claims, take Kafka down, crash the relay and watch the outbox keep every event safe.</span>
+        </span>
+      </button>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
         {projects.map((p) => (
           <li key={p.id}>
@@ -177,7 +189,15 @@ function CampPanel({ notify }) {
     if (form.message.trim().length < 10) er.message = 'At least 10 characters, please.';
     setErrors(er);
     if (Object.keys(er).length) return;
-    if (!formspreeId) { setStatus('error'); setMsg(`The form isn't connected yet. Please email me at ${profile.socials.email}.`); return; }
+    if (!formspreeId) {
+      // no form service connected: open the visitor's email app with the message ready to send
+      const subject = encodeURIComponent(`Portfolio message from ${form.name.trim()}`);
+      const body = encodeURIComponent(`${form.message.trim()}\n\n${form.name.trim()} (${form.email.trim()})`);
+      window.location.href = `mailto:${profile.socials.email}?subject=${subject}&body=${body}`;
+      setStatus('success');
+      setMsg('Your email app should open with the message ready. Just press send.');
+      return;
+    }
     setStatus('loading');
     try {
       const r = await fetch(`https://formspree.io/f/${formspreeId}`, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(form) });
@@ -207,7 +227,7 @@ function CampPanel({ notify }) {
             {status === 'loading' ? <><LoaderCircle size={16} className="animate-spin" /> Sending…</> : <><Send size={16} /> Send message</>}
           </button>
           <div aria-live="polite">
-            {status === 'success' && <p className="mt-2 text-sm text-emerald-300">Thank you, your message was sent. I'll reply soon.</p>}
+            {status === 'success' && <p className="mt-2 text-sm text-emerald-300">{msg || "Thank you, your message was sent. I'll reply soon."}</p>}
             {status === 'error' && <p className="mt-2 text-sm text-rose-300">{msg}</p>}
           </div>
         </div>

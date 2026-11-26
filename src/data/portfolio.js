@@ -1,24 +1,24 @@
 // ─────────────────────────────────────────────────────────────
 // ALL personal content lives here. Edit this file, not the components.
-// Items marked TODO still need your real information.
 // ─────────────────────────────────────────────────────────────
 
 export const profile = {
   name: 'Jeff Lam Ching Keat',
   displayName: 'Jeff Lam',
-  roles: ['Java Backend Engineer', 'SRE / DevOps Engineer', 'Cloud & AI Automation Engineer'],
+  headline: 'Software Engineer, Backend · Distributed Systems & Microservices',
+  roles: ['Java Backend Engineer', 'Distributed Systems & Microservices', 'SRE / Cloud Engineer'],
   tagline:
     'I trace problems to their root cause and build backend systems that stay reliable, then automate whatever slows the team down.',
   bio: [
     "I grew up on storybooks and sci-fi films, and somewhere along the way I realised the future in those stories is being written in code. That's why I chose Software Engineering at TAR UMT, where I'm graduating in December 2026 with a CGPA of 3.91.",
     "My favourite feeling in this job is the moment a bug finally makes sense: you dig past the symptom, find the real reason, and fix it for good. A close second is building something big and well-designed, or automating a task so I never have to do it by hand again.",
-    "I recently spent six months as an SRE / Java Engineer intern on the Fund Risk team at Ant International, where backend code meets production reliability. Now I'm looking for a full-time role in Java backend, SRE / DevOps, cloud or AI automation in the Klang Valley.",
+    "I've just spent six months as a Site Reliability / Java Engineer intern on the Fund Risk team at Ant International, building Spring Boot services, tuning SQL over large transaction datasets and chasing production issues to their root cause. Now I'm looking for a full-time backend role in the Klang Valley, and I'm keen to work in Go too.",
   ],
   location: 'Kuala Lumpur, Malaysia',
   availability: 'Open to full-time roles · available from 1 Dec 2026',
   languages: ['English', 'Mandarin', 'Cantonese', 'Malay'],
-  photo: null, // TODO: import a square photo (≥600×600, WebP) from src/assets and set it here
-  cvUrl: '/cv.pdf', // TODO: export your Overleaf resume as PDF → public/cv.pdf
+  certifications: ['AWS Cloud Architecting', 'AWS Cloud Foundations'],
+  cvUrl: '/cv.pdf',
   socials: {
     github: 'https://github.com/Ck666-cpu',
     linkedin: 'https://www.linkedin.com/in/ching-keat-lam-536656323',
@@ -28,7 +28,7 @@ export const profile = {
   stats: [
     { value: 3.91, decimals: 2, label: 'CGPA' },
     { value: 6, suffix: ' mo', label: 'SRE internship' },
-    { value: 4, label: 'Languages spoken' },
+    { value: 4, suffix: '×', label: "President's List" },
   ],
   siteRepo: 'https://github.com/Ck666-cpu/portfolio',
 };
@@ -67,66 +67,70 @@ export const skills = [
     items: [
       { name: 'Java', icon: 'java' },
       { name: 'Spring Boot', icon: 'spring' },
-      { name: 'SQL', icon: 'sql' },
-      { name: 'Python', icon: 'python' },
+      { name: 'Spring Security · JWT', icon: 'spring' },
+      { name: 'JPA / Hibernate', icon: 'sql' },
+      { name: 'REST API design', icon: 'distributed' },
+      { name: 'SQL · PL/SQL', icon: 'sql' },
+      { name: 'PostgreSQL · MySQL', icon: 'sql' },
       { name: 'Kafka / RocketMQ', icon: 'kafka' },
-      { name: 'Distributed systems', icon: 'distributed' },
+      { name: 'Transactional outbox', icon: 'kafka' },
+      { name: 'Python · FastAPI', icon: 'python' },
+      { name: 'JUnit 5 · Testcontainers', icon: 'test' },
       { name: 'Elasticsearch + Kibana', icon: 'elastic' },
-      { name: 'Solidity', icon: 'solidity' },
     ],
     // skills I want to learn next (shown locked in the skill tree)
     next: [
+      { name: 'Go', icon: 'go' },
       { name: 'Redis caching', icon: 'redis' },
       { name: 'System design at scale', icon: 'network' },
       { name: 'API design & backend project planning', icon: 'plan' },
-      { name: 'Go', icon: 'go' },
     ],
   },
   {
     category: 'Cloud & DevOps',
     items: [
-      { name: 'AWS', icon: 'aws' },
-      { name: 'Docker', icon: 'docker' },
-      { name: 'CI/CD', icon: 'cicd' },
-      { name: 'Git', icon: 'git' },
+      { name: 'AWS (certified)', icon: 'aws' },
+      { name: 'Docker · Compose', icon: 'docker' },
+      { name: 'Git CI/CD', icon: 'cicd' },
+      { name: 'Nginx', icon: 'linux' },
       { name: 'Linux', icon: 'linux' },
+      { name: 'Nacos', icon: 'distributed' },
     ],
     next: [
       { name: 'Kubernetes', icon: 'k8s' },
       { name: 'Terraform', icon: 'terraform' },
       { name: 'Serverless', icon: 'serverless' },
       { name: 'Prometheus & Grafana', icon: 'grafana' },
-      { name: 'AWS certification', icon: 'award' },
     ],
   },
   {
     category: 'AI & Automation',
     items: [
-      { name: 'RAG / LLM apps', icon: 'ai' },
-      { name: 'AI CLI tools', icon: 'cli' },
+      { name: 'RAG · LLMs (Ollama)', icon: 'ai' },
+      { name: 'LlamaIndex', icon: 'ai' },
+      { name: 'Qdrant vector DB', icon: 'sql' },
+      { name: 'Agentic AI coding tools', icon: 'cli' },
       { name: 'MCP (Model Context Protocol)', icon: 'mcp' },
       { name: 'Playwright', icon: 'playwright' },
-      { name: 'Python scripting', icon: 'python' },
     ],
     next: [
       { name: 'Multi-agent systems', icon: 'agents' },
       { name: 'LLM fine-tuning (LoRA)', icon: 'tune' },
       { name: 'LLM evals & guardrails', icon: 'shield' },
-      { name: 'Vector databases', icon: 'sql' },
       { name: 'MLOps', icon: 'boxes' },
     ],
   },
   {
     category: 'Soft skills',
     items: [
-      { name: 'Mentoring new interns', icon: 'grad' },
+      { name: 'Root-cause analysis', icon: 'bulb' },
       { name: 'Incident communication', icon: 'chat' },
-      { name: 'Teamwork', icon: 'team' },
-      { name: 'Problem solving', icon: 'bulb' },
+      { name: 'Code review', icon: 'team' },
+      { name: 'Mentoring new interns', icon: 'grad' },
       { name: 'Active listening', icon: 'ear' },
       { name: 'Adaptability', icon: 'shuffle' },
       { name: 'Time management', icon: 'clock' },
-      { name: 'Multilingual (EN · 中文 · BM)', icon: 'globe' },
+      { name: 'English · 中文 · 粤语 · BM', icon: 'globe' },
     ],
     next: [
       { name: 'Technical writing', icon: 'pen' },
@@ -136,122 +140,104 @@ export const skills = [
   },
 ];
 
-// TODO: replace these SAMPLE projects with your real ones (3–6).
-// Set `sample: false` (or delete the field) once an entry is real.
 // `hue` picks the colour of the generated cover; or set `image` to an imported 16:9 WebP.
+// `demo` adds a "Try the live demo" button that opens an in-browser simulation.
 export const projects = [
   {
-    id: 'rag-assistant',
-    sample: true,
+    id: 'claimflow',
     featured: true,
-    title: 'RAG Knowledge Assistant',
-    summary: 'Chat with internal documents using retrieval-augmented generation.',
+    title: 'ClaimFlow',
+    summary: 'Event-driven claims microservices: Spring Boot services talking through Kafka, with a transactional outbox so no event is lost.',
     problem:
-      'Answers were buried across long PDFs and wikis, so people kept asking the same questions.',
-    role: 'Solo developer: ingestion pipeline, retrieval, API and simple web UI.',
+      'A claims platform has to keep the claim record and everything downstream in sync. If a service saves a claim but crashes before telling Kafka, or a client retries a request, you end up with lost or duplicate events.',
+    role: 'Solo developer: service design, REST API contract, event flow, tests and the Angular front end.',
     features: [
-      'Chunking and embedding pipeline for PDF / Markdown sources',
-      'Vector search with source citations in every answer',
-      'REST API wrapped in a Docker image',
+      'Two microservices: a claims system of record and a notification consumer, linked by Kafka events published through a transactional outbox',
+      'Versioned REST API with an OpenAPI contract: idempotency keys (201, or 200 on replay), optimistic locking (409 on stale writes) and RFC 9457 errors',
+      'Full claim workflow by role: claimants submit and track, officers assess and decide, team leads see workload, SLA breaches and exposure',
+      'JUnit 5 and module tests plus Testcontainers integration tests against real PostgreSQL and Kafka; one-command local stack with Docker Compose',
     ],
-    tech: ['Python', 'LLM', 'Docker'],
-    outcome: 'Add a real result here, e.g. response time or questions answered.',
-    hue: 172,
-    liveUrl: '',
-    repoUrl: 'https://github.com/Ck666-cpu',
-  },
-  {
-    id: 'order-service',
-    sample: true,
-    featured: true,
-    title: 'Event-Driven Order Service',
-    summary: 'Spring Boot microservice that processes orders through a message queue.',
-    problem: 'Synchronous order handling failed under bursts and lost requests when a downstream service was slow.',
-    role: 'Backend developer: service design, messaging, persistence and tests.',
-    features: [
-      'Kafka producer / consumer with retry and dead-letter topic',
-      'Idempotent writes to a relational database',
-      'Health checks and metrics endpoints for monitoring',
-    ],
-    tech: ['Java', 'Spring Boot', 'Kafka', 'SQL'],
-    outcome: 'Add a real result here, e.g. throughput or test coverage.',
+    tech: ['Java 21', 'Spring Boot', 'Kafka', 'PostgreSQL', 'Testcontainers', 'Docker', 'Angular'],
+    outcome:
+      'Built so a claim event is never lost: if Kafka is down, events wait in the outbox and go out once it recovers, and a retried request never creates a second claim.',
     hue: 200,
+    demo: 'claimflow',
     liveUrl: '',
-    repoUrl: 'https://github.com/Ck666-cpu',
+    repoUrl: 'https://github.com/Ck666-cpu/claimflow',
   },
   {
-    id: 'cicd-pipeline',
-    sample: true,
-    title: 'Cloud CI/CD Pipeline',
-    summary: 'Push-to-deploy pipeline that builds, tests and ships containers to AWS.',
-    problem: 'Manual deployments were slow and easy to get wrong.',
-    role: 'DevOps: pipeline, container images and cloud setup.',
+    id: 'crag-assistant',
+    featured: true,
+    title: 'Real Estate Corrective-RAG Assistant',
+    summary: 'Final-year project: a locally hosted AI assistant that answers from internal documents only, with JWT and role-based access.',
+    problem:
+      'Real estate teams need quick answers from tenancy agreements and policies, but generic chatbots make things up and can leak sensitive documents.',
+    role: 'Final-year project: FastAPI backend, retrieval pipeline, security and Docker deployment.',
     features: [
-      'Automated build and test on every pull request',
-      'Docker images pushed to a registry and deployed to AWS',
-      'Rollback by redeploying the previous image tag',
+      'Corrective RAG: retrieved passages are re-ranked and checked before the model answers, to cut unsupported answers',
+      'Runs fully on-premise: Phi-3 via Ollama, BGE embeddings and reranker, Qdrant vector search',
+      'JWT login with Casbin RBAC enforced at both route and document level',
+      'FastAPI backend with a Streamlit front end, deployed with Docker',
     ],
-    tech: ['AWS', 'Docker', 'CI/CD'],
-    outcome: 'Add a real result here, e.g. deploy time before vs after.',
+    tech: ['Python', 'FastAPI', 'Qdrant', 'Ollama', 'Casbin RBAC', 'Docker'],
+    outcome: '86.67% answer accuracy and 0% hallucination on the project evaluation.',
+    hue: 168,
+    liveUrl: '',
+    repoUrl: 'https://github.com/Ck666-cpu/RAG_Chatbot',
+  },
+  {
+    id: 'ecommerce',
+    title: 'E-Commerce Backend Platform',
+    summary: 'Spring Boot REST backend for a shop: catalogue, cart, orders and reviews, secured with JWT roles.',
+    problem: "An online shop backend has to keep the catalogue searchable, separate admin and customer actions, and never sell stock it doesn't have.",
+    role: 'Solo developer: API design, security, persistence and tests.',
+    features: [
+      'REST APIs for products, categories, cart, orders and reviews, with pagination, sorting and search',
+      'JWT authentication with ADMIN and CUSTOMER roles via Spring Security',
+      'Stock validation at checkout to prevent overselling',
+    ],
+    tech: ['Java 17', 'Spring Boot 3', 'Spring Security', 'JPA', 'PostgreSQL', 'JUnit'],
+    outcome: 'Checkout rejects any order that would oversell, covered by JUnit tests.',
     hue: 32,
     liveUrl: '',
-    repoUrl: 'https://github.com/Ck666-cpu',
-  },
-  {
-    id: 'job-bot',
-    sample: true,
-    title: 'Browser Automation Toolkit',
-    summary: 'Playwright scripts that automate repetitive web workflows end to end.',
-    problem: 'Repetitive form filling and checks took hours each week.',
-    role: 'Solo developer: test design, scripts and scheduling.',
-    features: [
-      'Page-object structure for maintainable scripts',
-      'Screenshots and logs on every failure',
-      'Runs on a schedule in CI',
-    ],
-    tech: ['Python', 'Playwright', 'CI/CD'],
-    outcome: 'Add a real result here, e.g. hours saved per week.',
-    hue: 268,
-    liveUrl: '',
-    repoUrl: 'https://github.com/Ck666-cpu',
+    repoUrl: 'https://github.com/Ck666-cpu/Ecommerce-Java',
   },
 ];
 
 export const experience = [
   {
     type: 'work',
-    title: 'SRE / Java Engineer Intern — Fund Risk',
+    title: 'Site Reliability Engineer / Java Engineer Intern — Fund Risk',
     org: 'Ant International',
     start: 'Jun 2026',
-    end: 'Nov 2026',
-    // TODO: replace with 2–3 specific achievements (with numbers if you have them)
+    end: 'Dec 2026',
     bullets: [
-      'Worked on the Fund Risk team across Java backend services and site reliability.',
-      'Supported production health through monitoring, alert handling and incident follow-up.',
-      'Worked with message queues (RocketMQ / Kafka) and CI/CD in a large-scale fintech environment.',
+      'Developed and maintained internal Java / Spring Boot services and tools for fund-risk operations and real-time system monitoring.',
+      'Investigated and resolved production backend issues with senior engineers, using root-cause analysis to keep services highly available.',
+      'Wrote and optimised SQL over large-scale transaction datasets, improving data validation, audit accuracy and anomaly detection.',
+      'Wrote unit tests and took part in code reviews within enterprise Git / CI/CD workflows.',
+      'Used an agentic AI coding assistant (Qoder) to speed up feature work, debugging and refactoring.',
     ],
   },
   {
     type: 'education',
     title: 'Bachelor of Software Engineering (Hons)',
     org: 'Tunku Abdul Rahman University of Management and Technology (TAR UMT)',
-    start: '', // TODO: add start year
-    end: 'Dec 2026 (expected)',
-    bullets: [
-      'CGPA 3.91',
-      // TODO: add final-year project, awards or Dean's List if applicable
-    ],
+    start: 'Nov 2023',
+    end: 'Dec 2026',
+    honours: ["4× President's List", "3× Dean's List"],
+    coursework: ['Distributed Systems & Parallel Computing (A+)', 'Cloud Computing (A)', 'Advanced Database Management (A)', 'Data Structures & Algorithms (A)', 'Software QA & Testing (A)', 'Artificial Intelligence (A)'],
+    bullets: ['CGPA 3.91 / 4.00', "Final-year project: Real Estate Corrective-RAG Assistant (86.67% accuracy, 0% hallucination)"],
   },
 ];
 
 // Contact form: create a free form at https://formspree.io and paste its ID (e.g. "xyzabcd").
-// Leave empty and the form will tell visitors to email you directly instead.
+// Leave empty and the form opens the visitor's email app with their message ready to send.
 export const formspreeId = '';
 
 // Friends who come out to say hello when you click a building in the story world.
 // (tag is only for your own notes; it isn't shown on the site)
 // height: 'tall' | 'same' | 'short' (relative to Jeff) · glasses: 'white-square' | 'black' | null
-// TODO: give the TAR UMT coursemates their real initials / looks.
 export const friends = {
   campus: {
     title: 'Friends at TAR UMT',

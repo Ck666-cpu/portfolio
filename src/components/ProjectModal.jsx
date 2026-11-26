@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ExternalLink, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ExternalLink, Play, X } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import Cover from './Cover.jsx';
 
-export default function ProjectModal({ project, onClose, onPrev, onNext }) {
+export default function ProjectModal({ project, onClose, onPrev, onNext, onDemo }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -91,6 +91,9 @@ export default function ProjectModal({ project, onClose, onPrev, onNext }) {
             </div>
           )}
           <div className="mt-8 flex flex-wrap items-center gap-3">
+            {project.demo && (
+              <button onClick={onDemo} className="btn-primary"><Play size={16} fill="currentColor" /> Try the live demo</button>
+            )}
             {project.liveUrl && (
               <a href={project.liveUrl} target="_blank" rel="noreferrer" className="btn-primary"><ExternalLink size={16} /> Live demo</a>
             )}
