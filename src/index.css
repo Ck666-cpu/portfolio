@@ -213,3 +213,32 @@
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='20'%3E%3Cpath d='M0 20L3 6L5 20ZM6 20L10 2L12 20ZM13 20L15 9L17 20ZM20 20L24 4L25 20ZM28 20L30 10L33 20ZM35 20L39 1L40 20ZM43 20L45 7L48 20ZM50 20L54 5L55 20ZM56 20L58 11L60 20Z'/%3E%3C/svg%3E");
   -webkit-mask-size: auto 100%; mask-size: auto 100%; -webkit-mask-repeat: repeat-x; mask-repeat: repeat-x;
 }
+
+/* live demo callout on the Quest Board */
+.demo-callout {
+  border: 1px solid rgba(94, 234, 212, 0.35);
+  background: linear-gradient(120deg, rgba(20, 184, 166, 0.16), rgba(129, 140, 248, 0.12));
+  box-shadow: 0 0 30px -12px rgba(94, 234, 212, 0.6);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.demo-callout:hover { transform: translateY(-1px); border-color: rgba(94, 234, 212, 0.7); box-shadow: 0 0 40px -10px rgba(94, 234, 212, 0.9); }
+
+/* Quick view prints on its own, on white */
+@media print {
+  body > *:not(.print-area) { display: none !important; }
+  body { background: #fff !important; }
+  .print-area { position: static !important; overflow: visible !important; background: #fff !important; backdrop-filter: none !important; }
+  .no-print { display: none !important; }
+  .page { box-shadow: none !important; background: #fff !important; }
+  @page { margin: 14mm; }
+}
+
+/* Lite mode: same world, without the expensive light and particle effects */
+.lite .aurora, .lite .god-rays, .lite .grain, .lite .shooting-star, .lite .lamp-cone,
+.lite .lens-flare, .lite .arrival-sweep, .lite .clouds-near, .lite .particles { display: none !important; }
+.lite svg rect[mask] { display: none !important; }
+.lite [filter], .lite svg, .lite [class*="blur-["] { filter: none !important; }
+.lite .twinkle, .lite .cloud-drift, .lite .glass-sweep { animation: none !important; }
+.lite .dialog { animation: none !important; }
+/* scenes far from Jeff stop animating */
+.scene-idle * { animation-play-state: paused !important; }

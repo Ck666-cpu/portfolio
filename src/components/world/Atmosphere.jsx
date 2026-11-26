@@ -76,7 +76,7 @@ export const LensFlare = memo(function LensFlare({ xn, yn, opacity }) {
   ];
   const visibility = useVis(opacity);
   return (
-    <motion.div aria-hidden className="pointer-events-none absolute inset-0 z-[25]" style={{ opacity, visibility }}>
+    <motion.div aria-hidden className="lens-flare pointer-events-none absolute inset-0 z-[25]" style={{ opacity, visibility }}>
       {flares.map(([k, r, c], i) => (
         <Flare key={i} xn={xn} yn={yn} k={k} r={r} c={c} />
       ))}
@@ -91,9 +91,9 @@ function Flare({ xn, yn, k, r, c }) {
 
 /* ── Clouds ────────────────────────────────────────────── */
 const CLOUD = 'M20 70 Q0 70 4 52 Q8 36 28 40 Q30 14 60 16 Q80 0 104 14 Q130 4 146 26 Q172 22 176 46 Q196 50 190 66 Q186 74 170 72 Z';
-export const Clouds = memo(function Clouds({ x, light, shade, opacity = 1, top = '8svh', scale = 1, count = 6, blur = 0 }) {
+export const Clouds = memo(function Clouds({ x, light, shade, opacity = 1, top = '8svh', scale = 1, count = 6, blur = 0, className = '' }) {
   return (
-    <motion.div aria-hidden className="pointer-events-none absolute inset-x-0 will-change-transform" style={{ x, top, opacity }}>
+    <motion.div aria-hidden className={`pointer-events-none absolute inset-x-0 will-change-transform ${className}`} style={{ x, top, opacity }}>
       <div className="cloud-drift relative h-[30svh] w-[400vw]" style={{ filter: blur ? `blur(${blur}px)` : undefined, willChange: 'transform' }}>
         {Array.from({ length: count }).map((_, i) => {
           const w = (9 + rnd(i, 7) * 10) * scale;
@@ -216,7 +216,12 @@ export const Particles = memo(function Particles({ p, s }) {
     };
     const FIREFLY = sprite('190,255,140');
     const MOTE = sprite('255,226,160');
+    const root = document.documentElement;
     const tick = (t) => {
+      if (root.classList.contains('lite')) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
       const pr = p.get();
       const off = s.get();
       ctx.clearRect(0, 0, W, H);
@@ -244,7 +249,7 @@ export const Particles = memo(function Particles({ p, s }) {
       window.removeEventListener('resize', resize);
     };
   }, [p, s]);
-  return <canvas ref={ref} aria-hidden className="pointer-events-none absolute inset-0 z-[12] h-full w-full" />;
+  return <canvas ref={ref} aria-hidden className="particles pointer-events-none absolute inset-0 z-[12] h-full w-full" />;
 });
 
 /* ── Film grain + vignette ──────────────────────────────── */
@@ -435,7 +440,7 @@ export const ArrivalSweep = memo(function ArrivalSweep({ active }) {
     <motion.div
       key={active}
       aria-hidden
-      className="pointer-events-none absolute inset-y-0 z-[26] w-[40vw] -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent"
+      className="arrival-sweep pointer-events-none absolute inset-y-0 z-[26] w-[40vw] -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent"
       initial={{ left: '-50vw', opacity: 0 }}
       animate={{ left: '120vw', opacity: [0, 1, 1, 0] }}
       transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1], delay: 0.15 }}

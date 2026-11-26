@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useMotionTemplate, useMotionValueEvent, useScroll, useTransform } from 'framer-motion';
-import { BookOpen, ChevronRight, Download, Minimize2, Mouse, Sparkles, X } from 'lucide-react';
+import { BookOpen, ChevronRight, Download, FileText, Minimize2, Mouse, Sparkles, X } from 'lucide-react';
 import Character from './Character.jsx';
 import { SCENES } from './Scenes.jsx';
 import { STOPS } from './Panels.jsx';
@@ -64,7 +64,7 @@ function Lamp({ glow }) {
   );
 }
 
-export default function World({ openProject, notify }) {
+export default function World({ openProject, notify, openQuick, openDemo, lite, toggleLite }) {
   const ref = useRef(null);
   const { scrollYProgress: p } = useScroll({ target: ref, offset: ['start start', 'end end'] });
   const s = useTransform(p, (v) => v * (N - 1));
@@ -120,7 +120,7 @@ export default function World({ openProject, notify }) {
   const stopTimer = useRef();
   const last = useRef(0);
   useMotionValueEvent(s, 'change', (v) => {
-    setPos(v);
+    setPos((old) => (Math.abs(old - v) > 0.02 || Math.round(v) === v ? v : old));
     const d = v - last.current;
     last.current = v;
     if (Math.abs(d) > 0.0005) {
@@ -239,7 +239,7 @@ export default function World({ openProject, notify }) {
         <Skyline x={skylineX} fill={skylineFill} windows={cityLights} bottom={`calc(${G} + 1svh)`} height="24svh" />
         <motion.div aria-hidden className="pointer-events-none absolute inset-x-0 h-[10svh]" style={{ bottom: G, background: hazeBg }} />
         <Ranges x={far2X} fill={far2} width={340} seed={23} base={240} amp={110} step={140} kind="hill" bottom={`calc(${G} - 1px)`} height="16svh" />
-        <Clouds x={cloudNearX} light={cloudL} shade={cloudD} top="calc(100svh - 22svh - 16svh)" scale={1.4} count={6} opacity={0.35} blur={3} />
+        <Clouds x={cloudNearX} light={cloudL} shade={cloudD} top="calc(100svh - 22svh - 16svh)" scale={1.4} count={6} opacity={0.35} blur={3} className="clouds-near" />
 
         {/* ground */}
         <motion.div className="absolute inset-x-0 bottom-0 overflow-hidden" style={{ height: G, background: ground }}>
@@ -263,7 +263,7 @@ export default function World({ openProject, notify }) {
         {/* the places */}
         <motion.div className="absolute inset-0 will-change-transform" style={{ x: worldX }}>
           {SCENES.map((Scene, i) => (
-            <div key={i} className="absolute will-change-transform" style={{ left: `calc(${i * 100}vw + ${CX} - 0.675 * ${SH})`, bottom: `calc(${G} * 0.7)`, height: SH }}>
+            <div key={i} className={`absolute will-change-transform ${Math.abs(i - pos) > 1.2 ? 'scene-idle' : ''}`} style={{ left: `calc(${i * 100}vw + ${CX} - 0.675 * ${SH})`, bottom: `calc(${G} * 0.7)`, height: SH }}>
               <Scene shot={i === PARK ? shot : undefined} />
             </div>
           ))}
@@ -386,7 +386,7 @@ export default function World({ openProject, notify }) {
         <PostFX />
 
         {/* top bar with the route map */}
-        <header className="absolute inset-x-0 top-0 z-40 flex h-16 items-center gap-4 bg-gradient-to-b from-black/60 via-black/25 to-transparent px-4 sm:px-6">
+        <header className="absolute inset-x-0 top-0 z-40 flex h-16 items-center gap-2 sm:gap-4 bg-gradient-to-b from-black/60 via-black/25 to-transparent px-4 sm:px-6">
           <button onClick={() => go(0)} className="flex shrink-0 items-center gap-2 font-display text-lg font-bold text-white">
             <span className="logo-mark grid h-9 w-9 place-items-center rounded-lg text-sm text-ink">JL</span>
             <span className="hidden sm:inline">Jeff Lam</span>
@@ -402,6 +402,10 @@ export default function World({ openProject, notify }) {
               </button>
             ))}
           </nav>
+          <button onClick={toggleLite} aria-pressed={!lite} title={lite ? 'Effects off (lite mode). Turn on' : 'Effects on. Switch to lite mode'} aria-label={lite ? 'Turn visual effects on' : 'Turn visual effects off (lite mode)'} className={`hidden h-10 w-10 shrink-0 place-items-center rounded-lg border transition sm:grid ${lite ? 'border-white/15 text-slate-400 hover:text-white' : 'border-gold-soft/50 text-gold-soft hover:bg-gold-soft/10'}`}>
+            <Sparkles size={16} />
+          </button>
+          <button onClick={openQuick} className="dbtn-line shrink-0 !min-h-[40px] !px-3 text-sm text-white"><FileText size={15} /><span className="hidden sm:inline">Quick view</span></button>
           <a href={profile.cvUrl} download className="dbtn-gold shrink-0 !min-h-[40px] !px-3 text-sm"><Download size={15} /><span className="hidden sm:inline">CV</span></a>
         </header>
 
@@ -424,7 +428,7 @@ export default function World({ openProject, notify }) {
                   <Minimize2 size={15} />
                 </button>
               </div>
-              <stop.Panel go={go} openProject={openProject} notify={notify} score={score} shoot={shoot} openTree={() => setTreeOpen(true)} />
+              <stop.Panel go={go} openProject={openProject} openQuick={openQuick} openDemo={openDemo} notify={notify} score={score} shoot={shoot} openTree={() => setTreeOpen(true)} />
               {active < N - 1 && (
                 <button onClick={() => go(active + 1)} className="mt-5 flex items-center gap-1 text-sm font-semibold text-gold-soft hover:text-white">
                   Continue to {STOPS[active + 1].label} <ChevronRight size={16} className="nudge" />

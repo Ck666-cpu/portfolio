@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Award, Bot, Boxes, Brain, ClipboardList, Clock, Cloud, Database, Drama, Ear, Flag, GraduationCap, Globe, Heart, Lightbulb, Lock, MessagesSquare, Mic, Network, PenLine, Plug, Server, Share2, ShieldCheck, Shuffle, SlidersHorizontal, Sparkles, Terminal, Users, Workflow, X } from 'lucide-react';
+import { Award, Bot, Boxes, Brain, ClipboardList, Clock, Cloud, Database, Drama, Ear, FlaskConical, Flag, GraduationCap, Globe, Heart, Lightbulb, Lock, MessagesSquare, Mic, Network, PenLine, Plug, Server, Share2, ShieldCheck, Shuffle, SlidersHorizontal, Sparkles, Terminal, Users, Workflow, X } from 'lucide-react';
 import { FaAws, FaDocker, FaGitAlt, FaJava, FaLinux, FaPython } from 'react-icons/fa';
 import { SiApachekafka, SiElasticsearch, SiGo, SiGrafana, SiKubernetes, SiRedis, SiServerless, SiSolidity, SiSpringboot, SiTerraform } from 'react-icons/si';
 import { skills } from '../../data/portfolio.js';
@@ -13,7 +13,7 @@ const ICONS = {
   award: Award, brain: Brain, boxes: Boxes, pen: PenLine, grad: GraduationCap,
   distributed: Share2, elastic: SiElasticsearch, solidity: SiSolidity, plan: ClipboardList, serverless: SiServerless,
   cli: Terminal, mcp: Plug, agents: Users, tune: SlidersHorizontal, shield: ShieldCheck,
-  ear: Ear, shuffle: Shuffle, clock: Clock, mic: Mic, flag: Flag,
+  ear: Ear, shuffle: Shuffle, clock: Clock, mic: Mic, flag: Flag, test: FlaskConical,
 };
 const ROOTS = [Server, Cloud, Sparkles, Heart];
 const COLORS = ['#14b8a6', '#38bdf8', '#f59e0b', '#f472b6'];
