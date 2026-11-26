@@ -14,10 +14,8 @@ npm run build      # production build → dist/
 
 All personal content is in `src/data/portfolio.js`. The CV served by the site is `public/cv.pdf`; replace it when your résumé changes.
 
-Still open (search for `TODO`):
+Optional extras:
 
-- **Photo**: put a square WebP (≥600×600) in `src/assets/`, import it in `portfolio.js` and set `profile.photo`.
-- **Coursemates**: give the TAR UMT friends their real initials and looks.
 - **Contact form**: create a free form at formspree.io and paste its ID into `formspreeId`. Until then the form opens the visitor's email app with the message filled in.
 - **OG image**: add `public/og-image.png` (1200×630) so links preview well on LinkedIn / WhatsApp.
 

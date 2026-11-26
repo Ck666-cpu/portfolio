@@ -1,6 +1,5 @@
 // ─────────────────────────────────────────────────────────────
 // ALL personal content lives here. Edit this file, not the components.
-// Items marked TODO still need your real information.
 // ─────────────────────────────────────────────────────────────
 
 export const profile = {
@@ -19,7 +18,6 @@ export const profile = {
   availability: 'Open to full-time roles · available from 1 Dec 2026',
   languages: ['English', 'Mandarin', 'Cantonese', 'Malay'],
   certifications: ['AWS Cloud Architecting', 'AWS Cloud Foundations'],
-  photo: null, // TODO: import a square photo (≥600×600, WebP) from src/assets and set it here
   cvUrl: '/cv.pdf',
   socials: {
     github: 'https://github.com/Ck666-cpu',
@@ -240,7 +238,6 @@ export const formspreeId = '';
 // Friends who come out to say hello when you click a building in the story world.
 // (tag is only for your own notes; it isn't shown on the site)
 // height: 'tall' | 'same' | 'short' (relative to Jeff) · glasses: 'white-square' | 'black' | null
-// TODO: give the TAR UMT coursemates their real initials / looks.
 export const friends = {
   campus: {
     title: 'Friends at TAR UMT',
